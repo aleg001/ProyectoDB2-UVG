@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+</head>
+
+<body>
+    <div class="login-box">
+        <div class="login-header">Login</div>
+        <div class="login-body">
+            <p>Ingrese su usuario y contraseña</p>
+            <form class="form-group" action="/login/" method="post">
+                <label>Usuario</label>
+                <input type="text" class="form-control" name="username" placeholder="Usuario" id="username" required>
+                <label>Contraseña</label>
+                <input type="password" class="form-control" name="password" placeholder="Contraseña" id="password"
+                    required>
+
+                <input type="submit" value="Ingresar" name="">
+            </form>
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true"></span>
+                </button>
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+
+        </div>
+    </div>
+</body>
+
+</html>
