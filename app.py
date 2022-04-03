@@ -15,22 +15,14 @@ import os
 import urllib.parse as up
 import psycopg2 as bd
 
+# regex
+import re
+
+# hash
+from werkzeug.security import *
+
 # coneccion a base de datos con psycopg2 a elephantsql
-"""
-up.uses_netloc.append("postgres")
-url = up.urlparse(
-    os.environ[
-        "postgres://zxzqzikf:BspqkwRodadqDN_71iCKb2Go16puePOD@heffalump.db.elephantsql.com/zxzqzikf"
-    ]
-)
-conn = bd.connect(
-    database=url.path[1:],
-    user=url.username,
-    password=url.password,
-    host=url.hostname,
-    port=url.port,
-)
-"""
+
 conn = bd.connect(
     database="zxzqzikf",
     user="zxzqzikf",
@@ -43,23 +35,102 @@ conn.autocommit = (
     True  # Ensure data is added to the database immediately after write commands
 )
 cursor = conn.cursor()
-cursor.execute("INSERT INTO prueba VALUES (420, 'CristianBro');")
+cursor.execute("DROP TABLE prueba;")
 
 
 app = Flask(__name__)
 
 
-@app.route("/Login", methods=["POST", "GET"])
+# Regular expression operations verify
+"""
+Referencia:
+Documentación oficial de Python3 - https://docs.python.org/3/library/re.html
+
+Correo: r'[^@]+@[^@]+\.[^@]+'
+
+"""
+
+# Encriptacion de contraseña:
+
+"""
+
+Requisito:
+
+12. Las contraseñas de las cuentas deben pasarse por un algoritmo de Hash, como MD5 o
+SHA256, y el hash se debe almacenar en la base de datos (no se deben guardar
+contraseñas en texto plano)
+
+
+Referencia: https://www.youtube.com/watch?v=jJ4awOToB6k&ab_channel=PrettyPrinted
+
+Para encriptar con sha256:
+generate_password_hash(contraseña, method='sha256')
+
+Para verificar:
+check_password_hash(contraseñaEncriptada, contraseña)
+
+"""
+
+# Homepage
+@app.route("/")
 def index():
+    print("xd")
+
+
+# Logout
+@app.route("/logout")
+def logout():
+    print("xd")
+
+
+# Login de admin
+@app.route("/loginAdmin")
+def loginAcmon():
+    print("xd")
+
+
+# Logout de admin
+@app.route("/logoutAdmin")
+def logoutAcmon():
+    print("xd")
+
+
+# Perfil
+@app.route("/profile")
+def profile():
+    print("xd")
+
+
+# Perfil de admin
+@app.route("/adminProfile")
+def acmonProfile():
+    print("xd")
+
+
+# Crear cuenta
+@app.route("/signup", methods=["POST", "GET"])
+def signup():
+    print("xd")
+
+
+# Login normal
+@app.route("/login", methods=["POST", "GET"])
+# Login para cuentas registradas en base de datos
+def login():
 
     cur = conn.cursor(cursor_factory=bd.extras.DictCursor)
 
-    cur.execute(
-        """
-        INSERT INTO prueba VALUES (420, 'CristianBro');
-        """,
-    )
-    conn.commit()
-    flash("Tabla borrada")
+    if request.method == "POST":
+        if "username" in request.form and "password" in request.form:
+            username = request.form["username"]
+            password = request.form["password"]
 
-    return "<h1> HHTV </h1>"
+    """
+    Pendiente:
+    Query para buscar nombre
+    """
+
+    flash("Login exitoso!")
+
+    # Se renderiza el login normal
+    return render_template("/login/loginNormal.html")
