@@ -14,6 +14,7 @@ from flask import *
 import os
 import urllib.parse as up
 import psycopg2 as bd
+import psycopg2.extras
 
 # regex
 import re
@@ -35,10 +36,12 @@ conn.autocommit = (
     True  # Ensure data is added to the database immediately after write commands
 )
 cursor = conn.cursor()
-cursor.execute("DROP TABLE prueba;")
+# cursor.execute("DROP TABLE prueba;")
 
 
 app = Flask(__name__)
+app.secret_key = "Alecraft_01"
+app.config["EXPLAIN_TEMPLATE_LOADING"] = True
 
 
 # Regular expression operations verify
@@ -114,7 +117,7 @@ def signup():
 
 
 # Login normal
-@app.route("/login", methods=["POST", "GET"])
+@app.route("/login", methods=["GET", "POST"])
 # Login para cuentas registradas en base de datos
 def login():
 
@@ -130,7 +133,12 @@ def login():
     Query para buscar nombre
     """
 
-    flash("Login exitoso!")
+    # flash("Login exitoso!")
 
     # Se renderiza el login normal
-    return render_template("/login/loginNormal.html")
+    return render_template("login.html")
+
+
+# Referencia: https://codeforgeek.com/render-html-file-in-flask/
+if __name__ == "__main__":
+    app.run(debug=True)
