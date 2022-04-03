@@ -15,63 +15,32 @@ input[type="text"] {
   margin-right: -10%;
 }
 
+h1 {
+  text-align: center;
+  justify-content: center;
+}
+p {
+  text-align: center;
+  justify-content: center;
+  margin-right: 20%;
+}
+
 .login {
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-select[name="gender"] {
-  width: 21.8%;
-  padding: 15px;
-  margin: 5px -70px 22px;
-  border: none;
-  background: #f1f1f1;
-  margin-left: 43.2%;
-  position: relative;
-  left: -2.5%;
-  margin-right: -40%;
-}
-
-input[name="birthdate"] {
-  width: 22%;
-  padding: 15px;
-  margin: 50px -70px 22px;
-  border: none;
-  background: #f1f1f1;
-  margin-top: -10px;
-  position: relative;
-  top: 76px;
-  margin-left: -25.5%;
-}
-
-input[name="DPI"] {
-  width: 20.6%;
-  padding: 15px;
-  margin: 5px -90px 22px;
-  border: none;
-  background: #f1f1f1;
-  margin-left: 12%;
-}
-
-input[name="username"],
-input[name="email"] {
-  width: 49.2%;
-  padding: auto;
-  display: inline-block;
-  border: none;
-  margin-right: 5%;
-}
-
-input[type="name"],
 input[name="psw"] {
   width: 22%;
   padding: 15px;
   margin: 5px 40px 22px 0;
-  display: inline-block;
+
   border: none;
+  position: relative;
   background: #f1f1f1;
   margin-left: 15%;
+  margin-top: 5%;
 }
 
 input[type="text"]:focus,
@@ -111,8 +80,8 @@ button:hover {
 
 .signupbtn {
   float: left;
-  margin-top: 10%;
-  margin-left: 22%;
+  margin-top: 5%;
+  margin-left: 25%;
   width: 30%;
   border-radius: 20px;
 

@@ -22,7 +22,8 @@ Referencia para Flask + React:
 https://towardsdatascience.com/build-deploy-a-react-flask-app-47a89a5d17d9
 """
 # API para React
-# from flask_restful import Api, Resource, reqparse
+from flask_restful import *
+
 # from api.HelloApiHandler import HelloApiHandler
 
 # regex
@@ -138,11 +139,9 @@ def login():
         if "username" in request.form and "password" in request.form:
             username = request.form["username"]
             password = request.form["password"]
-
-    """
-    Pendiente:
-    Query para buscar nombre
-    """
+            selectInfo = "QUERY PENDIENTE"
+            cur.execute(selectInfo)
+            fetchData = cur.fetchall()
 
     # flash("Login exitoso!")
 

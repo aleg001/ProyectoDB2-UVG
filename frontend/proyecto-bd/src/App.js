@@ -2,6 +2,9 @@ import logo from "./logo.svg";
 import "./App.css";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+//import Login from "./login.js";
+
+//import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {
   const [getMessage, setGetMessage] = useState({});
@@ -26,7 +29,7 @@ function App() {
           {getMessage.status === 200 ? (
             <h3>{getMessage.data.message}</h3>
           ) : (
-            <h3>LOADING</h3>
+            <h3>Login</h3>
           )}
         </div>
       </header>
