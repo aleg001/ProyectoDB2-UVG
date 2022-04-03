@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Creacion de cuenta</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/signup.css') }}">
 
 
 
@@ -29,14 +29,22 @@
         <input type="text" placeholder="Nombre de usuario" name="username" id="username" method="GET" required>
 
         <input type="text" placeholder="Ingresar Email" name="email" id="user_email" method="GET" required>
-        <input type="text" placeholder="DPI" name="DPI" id="DPI" method="GET" required>
+
 
         <input type="password" placeholder="Contraseña" name="psw" id="pass" method="GET" required>
 
-
-        <input type="password" placeholder="Repetir contraseña" name="psw-repeat" id="passrpt" method="GET" required>
-
         <input type="date" placeholder="Fecha de nacimiento" name="birthdate" required>
+
+        <input type="text" placeholder="DPI" name="DPI" id="DPI" method="GET" required>
+
+
+        <div class="clearfix">
+
+
+            <button type="submit" class="signupbtn" value="submit"> <a href="{{url_for('login')}}"
+                    id="crearCuenta">Registrarte</a>
+            </button>
+        </div>
 
 
 

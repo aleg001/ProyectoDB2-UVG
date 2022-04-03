@@ -1,0 +1,143 @@
+* {
+  box-sizing: border-box;
+  font-family: "Roboto", sans-serif;
+  margin-left: 05%;
+}
+
+input[type="text"] {
+  width: 22%;
+  padding: 15px;
+  margin: 5px -70px 22px;
+  display: inline-block;
+  border: none;
+  background: #f1f1f1;
+  margin-left: 15%;
+  margin-right: -10%;
+}
+
+.login {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+select[name="gender"] {
+  width: 21.8%;
+  padding: 15px;
+  margin: 5px -70px 22px;
+  border: none;
+  background: #f1f1f1;
+  margin-left: 43.2%;
+  position: relative;
+  left: -2.5%;
+  margin-right: -40%;
+}
+
+input[name="birthdate"] {
+  width: 22%;
+  padding: 15px;
+  margin: 50px -70px 22px;
+  border: none;
+  background: #f1f1f1;
+  margin-top: -10px;
+  position: relative;
+  top: 76px;
+  margin-left: -25.5%;
+}
+
+input[name="DPI"] {
+  width: 20.6%;
+  padding: 15px;
+  margin: 5px -90px 22px;
+  border: none;
+  background: #f1f1f1;
+  margin-left: 12%;
+}
+
+input[name="username"],
+input[name="email"] {
+  width: 49.2%;
+  padding: auto;
+  display: inline-block;
+  border: none;
+  margin-right: 5%;
+}
+
+input[type="name"],
+input[name="psw"] {
+  width: 22%;
+  padding: 15px;
+  margin: 5px 40px 22px 0;
+  display: inline-block;
+  border: none;
+  background: #f1f1f1;
+  margin-left: 15%;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus {
+  background-color: #ddd;
+  outline: none;
+}
+
+hr {
+  border: 1px solid #f1f1f1;
+  margin-bottom: 25px;
+  width: 105%;
+  margin-left: -10%;
+}
+
+button {
+  background-color: #00c2cb;
+  color: black;
+  padding: 14px 2px;
+  margin: 8px 30%;
+  border: none;
+  cursor: pointer;
+  width: 50%;
+  opacity: 0.9;
+  font-size: 20px;
+}
+
+button:hover {
+  opacity: 1;
+}
+
+.create_account {
+  margin: 0% 38%;
+  margin-left: 29%;
+  font-size: 45px;
+}
+
+.signupbtn {
+  float: left;
+  margin-top: 10%;
+  margin-left: 22%;
+  width: 30%;
+  border-radius: 20px;
+
+  color: white;
+  text-decoration: none;
+  font-size: 18px;
+  letter-spacing: 1.5px;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background-color: #004ecbc8;
+}
+
+.container {
+  padding: 40px;
+}
+
+.clearfix::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+@media screen and (max-width: 300px) {
+  .signupbtn {
+    width: 100%;
+  }
+}
