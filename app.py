@@ -16,6 +16,15 @@ import urllib.parse as up
 import psycopg2 as bd
 import psycopg2.extras
 
+
+"""
+Referencia para Flask + React:
+https://towardsdatascience.com/build-deploy-a-react-flask-app-47a89a5d17d9
+"""
+# API para React
+# from flask_restful import Api, Resource, reqparse
+# from api.HelloApiHandler import HelloApiHandler
+
 # regex
 import re
 
@@ -40,6 +49,7 @@ cursor = conn.cursor()
 
 
 app = Flask(__name__)
+# app = Flask(__name__, static_folder="frontend/build")
 app.secret_key = "Alecraft_01"
 app.config["EXPLAIN_TEMPLATE_LOADING"] = True
 
@@ -114,6 +124,7 @@ def acmonProfile():
 @app.route("/signup", methods=["POST", "GET"])
 def signup():
     print("xd")
+    return render_template("signupHHTV.html")
 
 
 # Login normal
