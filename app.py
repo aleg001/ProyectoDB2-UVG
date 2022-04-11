@@ -108,7 +108,11 @@ def loginAcmon():
 def logoutAcmon():
     print("xd")
 
-
+# Catalogo
+@app.route("/cat")
+def cat():
+    return render_template("catalogue.html")
+    
 # Perfil
 @app.route("/profile")
 def profile():
