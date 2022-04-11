@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/catalogue.css') }}">
+    <!-- Link Swiper's CSS -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/swiper/swiper-bundle.min.css"
+    />
+    <title>Catalogo</title>
+</head>
+<body>
+    <section class="banner">
+        <aside class="aside-container">
+            <aside class="aside-banner">
+                <h1 class="title">The Batman</h1>
+                <button class="play-button">Reproducir trailer</button>
+            </aside>
+        </aside>
+        <figure class="banner-fig">
+            <img class="banner-img" src="https://i.ytimg.com/an_webp/c4VhCo_f7W4/mqdefault_6s.webp?du=3000&sqp=CLT0rZIG&rs=AOn4CLAoxrFj3LK3uKk3XONag4n1ycn9Jw" alt="">
+        </figure>
+    </section>
+
+
+    <section class="videos">
+        <section class="swiper mySwiper action">
+            <h1 class="category-section">ACCIÓN</h1>
+            <ul class="swiper-wrapper action-cards"> 
+                <li class="swiper-slide card"><img src="https://m.media-amazon.com/images/I/71QEq--8H-L._AC_SY679_.jpg" alt=""></li>
+                <li class="swiper-slide card"><img src="https://img.ecartelera.com/noticias/fotos/62200/62242/1.jpg" alt=""></li>
+                <li class="swiper-slide card"><img src="https://www.cinemascomics.com/wp-content/uploads/2022/02/poster-morbius.jpg" alt=""></li> 
+                <li class="swiper-slide card"><img src="https://m.media-amazon.com/images/M/MV5BZmRjODgyMzEtMzIxYS00OWY2LTk4YjUtMGMzZjMzMTZiN2Q0XkEyXkFqcGdeQXVyMTkxNjUyNQ@@._V1_.jpg" alt=""></li> 
+                <li class="swiper-slide card"><img src="https://assets-prd.ignimgs.com/2022/01/13/uncharted-poster-full-1642086040683.jpg" alt=""></li> 
+                <li class="swiper-slide card"><img src="https://m.media-amazon.com/images/M/MV5BYzZlYWIwMGMtYzgxYS00MTAyLWEzMjQtODIyZWM4ZTM5NzU3XkEyXkFqcGdeQXVyMzMwOTU5MDk@._V1_FMjpg_UX1000_.jpg" alt=""></li>
+                <li class="swiper-slide card"><img src="https://theactionelite.com/wp-content/uploads/2021/12/BE_Renegades_KA_r4v2.webp" alt=""></li>
+                <li class="swiper-slide card"><img src="https://criticologos.com/wp-content/uploads/2022/01/Lockdown_KeyArt_3x4_2160x2880-768x1024.jpg" alt=""></li>
+                <li class="swiper-slide card"><img src="" alt=""></li>
+                <li class="swiper-slide card"><img src="" alt=""></li>
+                <li class="swiper-slide card"><img src="" alt=""></li>
+                <li class="swiper-slide card"><img src="" alt=""></li>
+                <li class="swiper-slide card"><img src="" alt=""></li>
+                <li class="swiper-slide card"><img src="" alt=""></li>
+                <li class="swiper-slide card"><img src="" alt=""></li>
+                <li class="swiper-slide card"><img src="" alt=""></li>
+                
+            </ul>
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+            <div class="swiper-pagination"></div>
+
+            <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+
+            <!-- Initialize Swiper -->
+            <script>
+            var swiper = new Swiper(".mySwiper", {
+                slidesPerView: 8,
+                spaceBetween: 10,
+                slidesPerGroup: 8,
+                loop: true,
+                loopFillGroupWithBlank: true,
+                pagination: {
+                el: ".swiper-pagination",
+                clickable: true,
+                },
+                navigation: {
+                nextEl: ".swiper-button-next",
+                prevEl: ".swiper-button-prev",
+                },
+            });
+            </script>
+        </section>
+        <section class="comedy">
+        </section>
+        <section class="romance"></section>
+        <section class="horror"></section>
+        <section class="fantasy"></section>
+        
+    </section>
+</body>
+</html>
