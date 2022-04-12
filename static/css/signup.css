@@ -64,7 +64,7 @@ input[name="email"] {
 }
 
 input[type="name"],
-input[name="psw"] {
+input[name="pass"] {
   width: 22%;
   padding: 15px;
   margin: 5px 40px 22px 0;
@@ -140,4 +140,15 @@ button:hover {
   .signupbtn {
     width: 100%;
   }
+}
+
+label[id="label_isAdmin"] {
+  position: absolute;
+  right: 550px;
+  bottom: 370px;
+}
+input[id="isAdmin"] {
+  position: absolute;
+  right: 500px;
+  bottom: 370px;
 }

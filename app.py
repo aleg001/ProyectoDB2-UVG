@@ -15,6 +15,32 @@ import os
 import urllib.parse as up
 import psycopg2 as bd
 import psycopg2.extras
+import random
+import string
+import time
+
+
+# Creacion aleatoria de ID para usuario
+def IDUsuario():
+    randomID = "".join(
+        [random.choice(string.ascii_letters + string.digits) for n in range(50)]
+    )
+    return randomID
+
+
+# Fecha de creacion de cuenta
+def CreationDate():
+    valorRaw = time.time()
+    timeObj = time.localtime(valorRaw)
+    stringUnificado = "{0}-{1}-{2} {3}:{4}:{5}".format(
+        timeObj.tm_mday,
+        timeObj.tm_mon,
+        timeObj.tm_year,
+        timeObj.tm_hour,
+        timeObj.tm_min,
+        timeObj.tm_sec,
+    )
+    return stringUnificado
 
 
 """
@@ -122,10 +148,64 @@ def acmonProfile():
     print("xd")
 
 
+@app.route("/agregarUser", methods=["POST"])
+def agregarUser():
+    print("Hola mundo XD")
+    IDActual = IDUsuario()
+    isNotActive = False
+    date = CreationDate()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    if request.method == "POST":
+
+        print("xd")
+        name = request.form["name"]
+        print(name)
+        lastname = request.form["lastname"]
+        print(lastname)
+        birthdate = request.form["birthdate"]
+        print(date)
+        email = request.form["email"]
+        print(email)
+        username = request.form["username"]
+        password = request.form["pass"]
+        print(password)
+        passHash = generate_password_hash(password, method="sha256")
+        print(passHash)
+        dpi = request.form["DPI"]
+        isAdmin = request.form["isAdmin"]
+        print("___")
+        print(isAdmin)
+
+        # Creacion de cuenta
+        cur.execute(
+            """
+            INSERT INTO usuario VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}');
+            """.format(
+                IDActual, isAdmin, passHash, date, dpi, name, lastname, email
+            )
+        )
+        # Creacion de primer perfil
+        cur.execute(
+            """
+            INSERT INTO perfil VALUES ('{0}', '{1}', '{2}');
+            """.format(
+                IDActual, username, isNotActive
+            )
+        )
+    # pruebas = cur.fetchall()
+    # print(pruebas)
+
+    conn.commit()
+    cur.close()
+    return redirect(url_for("login"))
+
+
 # Crear cuenta
-@app.route("/signup", methods=["POST", "GET"])
+@app.route("/signup", methods=["GET", "POST"])
 def signup():
-    print("xd")
+
+    print("Antes del IF XD ")
+
     return render_template("signupHHTV.html")
 
 
@@ -148,6 +228,18 @@ def login():
 
     # Se renderiza el login normal
     return render_template("login.html")
+
+
+# Catalogo
+@app.route("/cat")
+def cat():
+    return render_template("catalogue.html")
+
+
+# Busqueda
+@app.route("/search")
+def search():
+    return render_template("search.html")
 
 
 # Referencia: https://codeforgeek.com/render-html-file-in-flask/
