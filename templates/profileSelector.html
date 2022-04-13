@@ -19,10 +19,16 @@
 
         <div class="main-div">
             <h1>¿Quien está viendo?</h1>
-            <div class="memberDiv">
-                <button class="addIcon"><i class="fas fa-plus-circle"></i> <span>Agregar perfil</span></button>
-            </div>
-            <button class="manageProfile">Manejar perfil</button>
+
+            <form action="/agregaPerfil" method="POST">
+                <div class="memberDiv">
+                    <button class="addIcon"><i class="fas fa-plus-circle"></i> <span>Agregar perfil</span></button>
+                </div>
+
+                <button class="manageProfile">Manejar perfil</button>
+            </form>
+
+
         </div>
     </div>
 
@@ -44,6 +50,7 @@
         })
     };
 
+
     addIcon.addEventListener('click', () => {
         let userName = prompt('Ingrese su nombre');
 
@@ -55,8 +62,8 @@
                 users.push(userName);
 
                 memberDiv.insertAdjacentHTML('afterbegin', `
-<button class="btn"><span>${userName}</span></button>
-`);
+    <button class="btn"><span>${userName}</span></button>
+    `);
             } else {
                 alert('Usuario existente');
             }
@@ -68,8 +75,11 @@
     })
 
 
+
+
     userIcons();
 
 </script>
+
 
 </html>

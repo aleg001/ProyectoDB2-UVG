@@ -136,11 +136,13 @@ def logoutAcmon():
 
 
 # Perfil
-@app.route("/profile")
-def profile():
+@app.route("/agregaPerfil", methods=["POST"])
+def profile(idPerfil):
     print("xd")
-
-    return render_template("profileSelector.html")
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    if request.method == "POST":
+        name = request.form[""]
+    return render_template("p-rofileSelector.html")
 
 
 # Perfil de admin
@@ -204,13 +206,32 @@ def login():
 
     cur = conn.cursor(cursor_factory=bd.extras.DictCursor)
 
-    if request.method == "POST":
+    if (
+        request.method == "POST"
+        and "username" in request.form
+        and "password" in request.form
+    ):
         if "username" in request.form and "password" in request.form:
             username = request.form["username"]
             password = request.form["password"]
-            selectInfo = "QUERY PENDIENTE"
-            cur.execute(selectInfo)
-            fetchData = cur.fetchall()
+            passHash = generate_password_hash(password, method="sha256")
+
+            cur.execute(
+                """
+                SELECT * FROM usuario WHERE username = '{0}' and password = '{1}'
+                """.format(
+                    username, passHash
+                )
+            )
+            conn.commit()
+            cur.close()
+
+            dataExiste = cur.fetchone()
+
+            if dataExiste:
+                print(dataExiste)
+            else:
+                flash("no existe chavo xd")
 
     # flash("Login exitoso!")
 
