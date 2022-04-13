@@ -139,6 +139,7 @@ def logoutAcmon():
 @app.route("/profile")
 def profile():
     print("xd")
+
     return render_template("profileSelector.html")
 
 
