@@ -150,31 +150,21 @@ def acmonProfile():
 
 @app.route("/agregarUser", methods=["POST"])
 def agregarUser():
-    print("Hola mundo XD")
     IDActual = IDUsuario()
     isNotActive = False
     date = CreationDate()
     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     if request.method == "POST":
 
-        print("xd")
         name = request.form["name"]
-        print(name)
         lastname = request.form["lastname"]
-        print(lastname)
         birthdate = request.form["birthdate"]
-        print(date)
         email = request.form["email"]
-        print(email)
         username = request.form["username"]
         password = request.form["pass"]
-        print(password)
         passHash = generate_password_hash(password, method="sha256")
-        print(passHash)
         dpi = request.form["DPI"]
         isAdmin = request.form["isAdmin"]
-        print("___")
-        print(isAdmin)
 
         # Creacion de cuenta
         cur.execute(
@@ -203,9 +193,6 @@ def agregarUser():
 # Crear cuenta
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
-
-    print("Antes del IF XD ")
-
     return render_template("signupHHTV.html")
 
 

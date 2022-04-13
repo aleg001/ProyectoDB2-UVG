@@ -36,8 +36,12 @@
 
             <input type="text" placeholder="DPI" name="DPI" id="DPI" method="GET" required>
 
-            <label for="isAdmin" name="isAdmin" id="label_isAdmin">Soy Administrador</label>
-            <input type="checkbox" name="isAdmin" id="isAdmin" method="GET">
+
+            <label id="isAdmin" for="isAdmin" method="GET">¿Eres admin?</label>
+            <select id="isAdmin" name="isAdmin" method="GET">
+                <option value="True">Si</option>
+                <option value="False">No</option>
+            </select>
 
 
 

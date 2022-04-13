@@ -142,12 +142,12 @@ button:hover {
   }
 }
 
-label[id="label_isAdmin"] {
+label[id="isAdmin"] {
   position: absolute;
   right: 550px;
   bottom: 370px;
 }
-input[id="isAdmin"] {
+select[id="isAdmin"] {
   position: absolute;
   right: 500px;
   bottom: 370px;
