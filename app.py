@@ -10,7 +10,9 @@ Cristian Aguirre - 20231
 """
 
 # imports
+from urllib import request
 from flask import *
+from flask import flash
 import os
 import urllib.parse as up
 import psycopg2 as bd
@@ -192,6 +194,162 @@ def agregarUser():
     cur.close()
     return redirect(url_for("login"))
 
+#Agregar un nuevo director
+@app.route("/agregarDirector", methods=["POST"])
+def agregarDirector():
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    return_var = "add_director"
+    if request.method == "POST":
+        name = request.form["name"]
+        lastname = request.form["lastname"]
+        dpi = request.form["dpi"]
+
+        cur.execute(
+            """
+            SELECT * FROM director WHERE id_director = '{0}';
+            """.format(dpi)
+        )
+        variable = cur.fetchone()
+        
+        if variable:
+            flash('El director ya existe')
+        else:
+            # Creacion de nuevo director
+            cur.execute(
+                """
+                INSERT INTO director VALUES ('{0}', '{1}', '{2}');
+                """.format(
+                    dpi, name, lastname
+                )
+            )
+            return_var = "cat"
+            conn.commit()
+            flash('El director se ha registrado correctamente')
+        cur.close()
+
+    return redirect(url_for(return_var))
+
+#Agregar un nuevo actor
+@app.route("/agregarActor", methods=["POST"])
+def agregarActor():
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    if request.method == "POST":
+
+        name = request.form["name"]
+        lastname = request.form["lastname"]
+        dpi = request.form["dpi"]
+
+        # Creacion de nuevo director
+        cur.execute(
+            """
+            INSERT INTO actor VALUES ('{0}', '{1}', '{2}');
+            """.format(
+                dpi, name, lastname
+            )
+        )
+
+    conn.commit()
+    cur.close()
+    return redirect(url_for("cat"))
+
+#Agregar un nuevo anunciante
+@app.route("/agregarAnunciante", methods=["POST"])
+def agregarAnunciante():
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    return_var = "add_anunciante"
+    if request.method == "POST":
+        name = request.form["name"]
+        id = request.form["id"]
+
+        cur.execute(
+            """
+            SELECT * FROM anunciante WHERE id_anunciante = '{0}';
+            """.format(id)
+        )
+        variable = cur.fetchone()
+        
+        if variable:
+            flash('El anunciante ingresado ya existe')
+        else:
+            # Creacion de nuevo director
+            cur.execute(
+                """
+                INSERT INTO anunciante VALUES ('{0}', '{1}');
+                """.format(
+                    id, name
+                )
+            )
+            return_var = "cat"
+            conn.commit()
+            flash('El anunciante se ha registrado correctamente')
+        cur.close()
+
+    return redirect(url_for(return_var))
+
+@app.route("/agregarAnuncio", methods=["POST"])
+def agregarAnuncio():
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    return_var = "add_advertisment"
+    if request.method == "POST":
+        id_anun = request.form["id_anun"]
+        id = request.form["id"]
+        url_ad = request.form["url"]
+        descri = request.form["desc"]
+        cur.execute(
+            """
+            SELECT * FROM anuncio WHERE id_anuncio = '{0}';
+            """.format(id)
+        )
+        variable = cur.fetchone()
+
+        cur.execute(
+            """
+            SELECT * FROM anunciante WHERE id_anunciante = '{0}';
+            """.format(id_anun)
+        )
+        variable2 = cur.fetchone()
+        
+        if variable:
+            flash('El anuncio ingresado ya existe')
+        else:
+            # Creacion de nuevo director
+            cur.execute(
+                """
+                INSERT INTO anuncio VALUES ('{0}', '{1}', '{2}', '{3}');
+                """.format(
+                    id, id_anun, url_ad, descri 
+                )
+            )
+            return_var = "cat"
+            conn.commit()
+            flash('El anuncio se ha registrado correctamente')
+        cur.close()
+
+    return redirect(url_for(return_var))
+
+# Agregar Trailer
+@app.route("/agregarTrailer", methods=["POST"])
+def agregarTrailer():
+    IDTrailer = IDUsuario()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    if request.method == "POST":
+
+        name = request.form["name"]
+        lastname = request.form["lastname"]
+        dpi = request.form["dpi"]
+
+        # Creacion de nuevo director
+        cur.execute(
+            """
+            INSERT INTO actor VALUES ('{0}', '{1}', '{2}');
+            """.format(
+                dpi, name, lastname
+            )
+        )
+
+    conn.commit()
+    cur.close()
+    return redirect(url_for("cat"))
 
 # Crear cuenta
 @app.route("/signup", methods=["GET", "POST"])
@@ -244,11 +402,35 @@ def login():
 def cat():
     return render_template("catalogue.html")
 
-
 # Busqueda
 @app.route("/search")
 def search():
     return render_template("search.html")
+
+# Agregar anunciante
+@app.route("/addanu")
+def add_anunciante():
+    return render_template("addAnu.html")
+
+# Agregar director
+@app.route("/adddir")
+def add_director():
+    return render_template("addDir.html")
+
+# Agregar anuncio
+@app.route("/addad")
+def add_advertisment():
+    return render_template("addAd.html")
+
+# Agregar actor
+@app.route("/addactor")
+def add_actor():
+    return render_template("addAct.html")
+
+# Agregar trailer
+@app.route("/addtrailer")
+def add_trailer():
+    return render_template("addTrailer.html")
 
 
 # Referencia: https://codeforgeek.com/render-html-file-in-flask/
