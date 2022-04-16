@@ -16,7 +16,8 @@ body {
 .banner {
   display: flex;
   height: 55vh;
-  background: linear-gradient(90deg, #00d2ff 0%, #3a47d5 100%);
+  align-items: center;
+  justify-content: center;
 }
 
 .banner .title {
@@ -25,9 +26,8 @@ body {
 }
 
 .banner-img {
-  width: 65vw;
+  width: 100vw;
   height: 55vh;
-  object-fit: cover;
 }
 
 .aside-banner {
@@ -46,6 +46,7 @@ section .card {
   height: 350px;
   width: 230px;
   padding: 5px;
+  cursor: pointer;
 }
 
 section .card img {

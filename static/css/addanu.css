@@ -1,0 +1,89 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: "Open Sans", sans-serif, white;
+  }
+
+  body{
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #262626;
+      flex-direction: column;
+  }
+
+  input {
+    width: 25vw;
+    padding: 15px;
+    margin: 5px;
+    border: none;
+    background: #f1f1f1;
+    border-radius: 10px;
+  }
+
+  .form{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      width: 30vw;
+      padding: 30px;
+      border-radius: 10px;
+  }
+
+  .container{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      width: 30vw;
+      height: auto;
+      background-color: #404040;
+      border-radius: 10px;
+      box-shadow: 5px 5px 40px;
+  }
+
+  button {
+    width:15vw;
+    background: linear-gradient(90deg, #00d2ff 0%, #3a47d5 100%);
+    padding: 10px;
+    margin: 5px;
+    color: black;
+    border: none;
+    cursor: pointer;
+    opacity: 0.9;
+    font-size: 15px;
+    border-radius: 50px;
+    margin-top: 30px;
+    box-shadow: 1px 1px 10px #262626;
+  }
+  
+button:hover {
+    opacity: 1;
+}
+
+  .title{
+    font-size: 30px;
+    color: white;
+    margin: 40px 25px 25px 25px;
+  }
+
+hr {
+    border: 1px solid #737373;
+    width: 25vw;
+}
+
+#Add-Act{
+    color: white;
+}
+
+.box-message{
+  padding: 15px;
+  margin-bottom: 20px;
+  background-color: #737373;
+  border-radius: 40px;
+  color: white;
+}
