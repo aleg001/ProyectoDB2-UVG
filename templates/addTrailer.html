@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/addtrailer.css') }}">
+    <title>Agregar trailer</title>
+</head>
+<body>
+    <section class="container">
+
+        <h1 class="title">Información de trailer</h1>
+
+        <hr>
+
+        <form class="form" action="/agregarTrailer" method="POST">
+            <input type="text" placeholder="Titulo" name="title" id="title" method="GET">
+            <input type="text" placeholder="Género" name="genre" id="genre" method="GET">
+            <input type="text" placeholder="Categoría" name="category" id="category" method="GET">
+            <input type="text" placeholder="Director" name="director" id="director" method="GET">
+            <input type="text" placeholder="Actor principal" name="prota" id="prota" method="GET">
+            <input type="number" placeholder="Premios" name="awards" id="awards" method="GET">
+            <input type="date" placeholder="Fecha de estreno" name="date" id="date" method="GET">
+            <input type="text" placeholder="URL" name="url" id="url" method="GET">
+            <input type="text" placeholder="Sinópsis" name="summary" id="summary" method="GET">
+            <input type="text" placeholder="ID Anuncio" name="ad" id="ad" method="GET">
+
+
+            <section class=" clearfix">
+                <button type="submit" class="add-tr-btn" value="submit"> <a id="Add-Tr">Agregar</a>
+                </button>
+            </section>
+        </form>
+    </section>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/addad.css') }}">
+    <title>Document</title>
+</head>
+<body>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <div class="box-message">
+                    <p> {{ message }} </p>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <section class="container">
+
+        <h1 class="title">Información de Anuncio</h1>
+
+        <hr>
+
+        <form class="form" action="/agregarAnuncio" method="POST">
+            <input type="number" placeholder="ID" name="id" id="id" method="GET">
+            <input type="number" placeholder="ID anunciante" name="id_anun" id="id_anun" method="GET">
+            <input type="text" placeholder="URL" name="url" id="url" method="GET">
+            <input type="text" placeholder="Descripción" name="desc" id="desc" method="GET">
+
+            <section class=" clearfix">
+                <button type="submit" class="add-act-btn" value="submit"> <a id="Add-Act">Agregar</a>
+                </button>
+            </section>
+        </form>
+    </section>
+</body>
+</html>
