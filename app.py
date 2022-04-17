@@ -623,9 +623,43 @@ def cantRep():
     return render_template("cantidadRepro.html")
 
 
-@app.route("/cantRepro")
+@app.route("/cantRepro", methods=["POST"])
 def cantRepro():
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    if request.method == "POST":
+        date1 = request.form["dateI"]
+        date2 = request.form["dateF"]
 
+        cur.execute(
+            """
+            SELECT COUNT(r.*) AS cant_reps, t.categoria_t, s.tipo 
+            FROM reproduccion r
+            LEFT JOIN trailer t ON r.id_vid = t.id_trailer
+            LEFT JOIN perfil p ON r.id_per = p.id_perfil
+            LEFT JOIN suscripcion s ON p.id_usuario = s.id_user
+            WHERE r.fecha_rep::date BETWEEN (SELECT TO_DATE('{0}', 'YYYY-MM-DD')) and (SELECT TO_DATE('{1}', 'YYYY-MM-DD')) 
+            GROUP BY t.genero_t, t.categoria_t, s.tipo 
+            ORDER BY cant_reps DESC;
+            """.format(
+                date1, date2
+            )
+        )
+
+        Repros = cur.fetchall()
+        strTemp = ""
+        strFinal = ""
+        """"
+        for i in Repros:
+            strTemp = str(Repros[i])
+            strFinal = strTemp.replace("[", "")
+            strFinal = strTemp.replace("]", "")
+            strFinal = strTemp.replace("(", " ")
+            strFinal = strTemp.replace(")", "")"""
+
+        flash(Repros)
+        conn.commit()
+        cur.close()
+        # cantidadrepro = cur.fetchall()
     return render_template("cantidadRepro.html")
 
 
@@ -639,9 +673,9 @@ def estadisticaCantidad():
     print("XD")
 
 
-@app.route("/reportesAdmin", methods=["POST"])
-def reportesAdmin():
-    print("XD")
+@app.route("/reportes", methods=["GET", "POST"])
+def reportes():
+    return render_template("reportesAdmin.html")
 
 
 # Referencia: https://codeforgeek.com/render-html-file-in-flask/

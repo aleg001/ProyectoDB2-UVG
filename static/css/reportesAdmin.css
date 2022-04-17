@@ -1,0 +1,106 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: "Open Sans", sans-serif, white;
+  text-decoration-line: none;
+}
+
+body {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #262626;
+  flex-direction: column;
+}
+
+input {
+  width: 25vw;
+  padding: 15px;
+  margin: 5px;
+  border: none;
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.form {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  width: 30vw;
+  padding: 30px;
+  border-radius: 10px;
+}
+
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  width: 30vw;
+  height: auto;
+  background-color: #404040;
+  border-radius: 10px;
+  box-shadow: 5px 5px 40px;
+  margin-bottom: 10%;
+}
+
+button {
+  width: 15vw;
+  background: linear-gradient(90deg, #ffffff 0%, #ffffff 100%);
+  padding: 10px;
+  margin: 5px;
+  color: white;
+  border: none;
+  cursor: pointer;
+  opacity: 0.9;
+  font-size: 15px;
+  border-radius: 50px;
+  margin-top: 30px;
+  box-shadow: 1px 1px 10px #262626;
+  margin-bottom: 10%;
+  text-decoration-line: none;
+}
+
+button:hover {
+  opacity: 1;
+}
+
+.title {
+  font-size: 30px;
+  color: white;
+  margin: 40px 25px 25px 25px;
+}
+
+hr {
+  border: 1px solid #fff8f8;
+  width: 25vw;
+}
+
+h1 {
+  margin-top: 10%;
+  color: white;
+}
+
+#Add-Act {
+  color: white;
+}
+
+.box-message {
+  padding: 15px;
+  margin-bottom: 20px;
+  background-color: #737373;
+  border-radius: 40px;
+  color: rgb(24, 16, 16);
+}
+
+.MensajesFlash {
+  padding: 15px;
+  margin-bottom: 20px;
+  background-color: #737373;
+  border-radius: 40px;
+  color: white;
+}
