@@ -30,13 +30,27 @@ def IDUsuario():
     return randomID
 
 
+def IDTrailerRandom():
+    randomID = "".join(
+        [random.choice(string.ascii_letters + string.digits) for n in range(80)]
+    )
+    return randomID
+
+
+def IDAnuncioRandom():
+    randomID = "".join(
+        [random.choice(string.ascii_letters + string.digits) for n in range(100)]
+    )
+    return randomID
+
+
 # Fecha de creacion de cuenta
 def CreationDate():
     valorRaw = time.time()
     timeObj = time.localtime(valorRaw)
     stringUnificado = "{0}-{1}-{2} {3}:{4}:{5}".format(
-        timeObj.tm_mday,
         timeObj.tm_mon,
+        timeObj.tm_mday,
         timeObj.tm_year,
         timeObj.tm_hour,
         timeObj.tm_min,
@@ -156,6 +170,7 @@ def acmonProfile():
 @app.route("/agregarUser", methods=["POST"])
 def agregarUser():
     IDActual = IDUsuario()
+    RandomID = IDUsuario()
     isNotActive = False
     date = CreationDate()
     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
@@ -182,9 +197,9 @@ def agregarUser():
         # Creacion de primer perfil
         cur.execute(
             """
-            INSERT INTO perfil VALUES ('{0}', '{1}', '{2}');
+            INSERT INTO perfil VALUES ('{0}', '{1}', '{2}', '{3}');
             """.format(
-                IDActual, username, isNotActive
+                RandomID, IDActual, username, isNotActive
             )
         )
     # pruebas = cur.fetchall()
@@ -194,7 +209,8 @@ def agregarUser():
     cur.close()
     return redirect(url_for("login"))
 
-#Agregar un nuevo director
+
+# Agregar un nuevo director
 @app.route("/agregarDirector", methods=["POST"])
 def agregarDirector():
     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
@@ -207,12 +223,14 @@ def agregarDirector():
         cur.execute(
             """
             SELECT * FROM director WHERE id_director = '{0}';
-            """.format(dpi)
+            """.format(
+                dpi
+            )
         )
         variable = cur.fetchone()
-        
+
         if variable:
-            flash('El director ya existe')
+            flash("El director ingresado ya existe")
         else:
             # Creacion de nuevo director
             cur.execute(
@@ -224,35 +242,49 @@ def agregarDirector():
             )
             return_var = "cat"
             conn.commit()
-            flash('El director se ha registrado correctamente')
         cur.close()
 
     return redirect(url_for(return_var))
 
-#Agregar un nuevo actor
+
+# Agregar un nuevo actor
 @app.route("/agregarActor", methods=["POST"])
 def agregarActor():
     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    return_var = "add_actor"
     if request.method == "POST":
 
         name = request.form["name"]
         lastname = request.form["lastname"]
         dpi = request.form["dpi"]
 
-        # Creacion de nuevo director
         cur.execute(
             """
-            INSERT INTO actor VALUES ('{0}', '{1}', '{2}');
+            SELECT * FROM actor WHERE id_actor = '{0}';
             """.format(
-                dpi, name, lastname
+                dpi
             )
         )
+        variable = cur.fetchone()
 
-    conn.commit()
-    cur.close()
-    return redirect(url_for("cat"))
+        if variable:
+            flash("El actor ya existe")
+        else:
+            # Creacion de nuevo actor
+            cur.execute(
+                """
+                INSERT INTO actor VALUES ('{0}', '{1}', '{2}');
+                """.format(
+                    dpi, name, lastname
+                )
+            )
+            conn.commit()
+            return_var = "cat"
+        cur.close()
+    return redirect(url_for(return_var))
 
-#Agregar un nuevo anunciante
+
+# Agregar un nuevo anunciante
 @app.route("/agregarAnunciante", methods=["POST"])
 def agregarAnunciante():
     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
@@ -264,12 +296,14 @@ def agregarAnunciante():
         cur.execute(
             """
             SELECT * FROM anunciante WHERE id_anunciante = '{0}';
-            """.format(id)
+            """.format(
+                id
+            )
         )
         variable = cur.fetchone()
-        
+
         if variable:
-            flash('El anunciante ingresado ya existe')
+            flash("El anunciante ya existe")
         else:
             # Creacion de nuevo director
             cur.execute(
@@ -281,75 +315,161 @@ def agregarAnunciante():
             )
             return_var = "cat"
             conn.commit()
-            flash('El anunciante se ha registrado correctamente')
         cur.close()
 
     return redirect(url_for(return_var))
+
 
 @app.route("/agregarAnuncio", methods=["POST"])
 def agregarAnuncio():
     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     return_var = "add_advertisment"
+    anuncioID = IDAnuncioRandom()
     if request.method == "POST":
-        id_anun = request.form["id_anun"]
-        id = request.form["id"]
+        id = request.form["id_anun"]
         url_ad = request.form["url"]
         descri = request.form["desc"]
-        cur.execute(
-            """
-            SELECT * FROM anuncio WHERE id_anuncio = '{0}';
-            """.format(id)
-        )
-        variable = cur.fetchone()
 
         cur.execute(
             """
             SELECT * FROM anunciante WHERE id_anunciante = '{0}';
-            """.format(id_anun)
+            """.format(
+                id
+            )
         )
         variable2 = cur.fetchone()
-        
-        if variable:
-            flash('El anuncio ingresado ya existe')
-        else:
+
+        if variable2 != None:
             # Creacion de nuevo director
             cur.execute(
                 """
                 INSERT INTO anuncio VALUES ('{0}', '{1}', '{2}', '{3}');
                 """.format(
-                    id, id_anun, url_ad, descri 
+                    anuncioID, id, url_ad, descri
                 )
             )
             return_var = "cat"
+
             conn.commit()
-            flash('El anuncio se ha registrado correctamente')
+        else:
+            flash("El anunciante ingresado no existe")
         cur.close()
 
     return redirect(url_for(return_var))
 
+
 # Agregar Trailer
 @app.route("/agregarTrailer", methods=["POST"])
 def agregarTrailer():
-    IDTrailer = IDUsuario()
+    return_var = "add_trailer"
     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     if request.method == "POST":
+        IDTrailer = request.form["id"]
+        title = request.form["title"]
+        genre = request.form["genre"]
+        category = request.form["category"]
+        tiempo = request.form["time"]
+        director = request.form["director"]
+        prota = request.form["prota"]
+        premios = request.form["awards"]
+        estreno = request.form["date"]
+        url = request.form["url"]
+        resumen = request.form["summary"]
+        anuncio = request.form["ad"]
 
-        name = request.form["name"]
-        lastname = request.form["lastname"]
-        dpi = request.form["dpi"]
-
-        # Creacion de nuevo director
         cur.execute(
             """
-            INSERT INTO actor VALUES ('{0}', '{1}', '{2}');
+            SELECT * FROM trailer WHERE id_trailer = '{0}';
             """.format(
-                dpi, name, lastname
+                IDTrailer
             )
         )
+        existencia = cur.fetchone()
 
-    conn.commit()
-    cur.close()
-    return redirect(url_for("cat"))
+        if existencia:
+            flash("El trailer ya existe")
+        else:
+            cur.execute(
+                """
+                SELECT * FROM genero WHERE id_genero = '{0}';
+                """.format(
+                    genre
+                )
+            )
+            existencia_genero = cur.fetchone()
+
+            if existencia_genero != None:
+                cur.execute(
+                    """
+                    SELECT * FROM categoria WHERE id_categoria = '{0}';
+                    """.format(
+                        category
+                    )
+                )
+                existencia_category = cur.fetchone()
+
+                if existencia_category != None:
+                    cur.execute(
+                        """
+                        SELECT * FROM director WHERE id_director = '{0}';
+                        """.format(
+                            director
+                        )
+                    )
+                    existencia_director = cur.fetchone()
+                    if existencia_director != None:
+                        cur.execute(
+                            """
+                            SELECT * FROM actor WHERE id_actor = '{0}';
+                            """.format(
+                                prota
+                            )
+                        )
+                        existencia_prota = cur.fetchone()
+                        if existencia_prota != None:
+                            cur.execute(
+                                """
+                                SELECT * FROM anuncio WHERE id_anuncio = '{0}';
+                                """.format(
+                                    anuncio
+                                )
+                            )
+                            existencia_anuncio = cur.fetchone()
+                            if existencia_anuncio != None:
+                                cur.execute(
+                                    """
+                                    INSERT INTO trailer VALUES ('{0}', '{1}', '{2}','{3}', '{4}', '{5}','{6}', '{7}', '{8}','{9}', '{10}', '{11}');
+                                    """.format(
+                                        IDTrailer,
+                                        title,
+                                        genre,
+                                        category,
+                                        estreno,
+                                        director,
+                                        prota,
+                                        premios,
+                                        url,
+                                        resumen,
+                                        anuncio,
+                                        tiempo,
+                                    )
+                                )
+                                conn.commit()
+                                return_var = "cat"
+                            else:
+                                flash("El anuncio ingresado no existe")
+                        else:
+                            flash("El actor ingresado no existe")
+                    else:
+                        flash("El director ingresado no existe")
+                else:
+                    flash("La categoria ingresada no existe")
+
+            else:
+                flash("El genero ingresado no existe")
+        cur.close()
+    return redirect(url_for(return_var))
+
 
 # Crear cuenta
 @app.route("/signup", methods=["GET", "POST"])
@@ -357,44 +477,53 @@ def signup():
     return render_template("signupHHTV.html")
 
 
-# Login normal
+# Login
 @app.route("/login", methods=["GET", "POST"])
-# Login para cuentas registradas en base de datos
 def login():
-
-    cur = conn.cursor(cursor_factory=bd.extras.DictCursor)
-
-    if (
-        request.method == "POST"
-        and "username" in request.form
-        and "password" in request.form
-    ):
-        if "username" in request.form and "password" in request.form:
-            username = request.form["username"]
-            password = request.form["password"]
-            passHash = generate_password_hash(password, method="sha256")
-
-            cur.execute(
-                """
-                SELECT * FROM usuario WHERE username = '{0}' and password = '{1}'
-                """.format(
-                    username, passHash
-                )
-            )
-            conn.commit()
-            cur.close()
-
-            dataExiste = cur.fetchone()
-
-            if dataExiste:
-                print(dataExiste)
-            else:
-                flash("no existe chavo xd")
-
-    # flash("Login exitoso!")
-
-    # Se renderiza el login normal
     return render_template("login.html")
+
+
+@app.route("/verificarUser", methods=["POST"])
+def verificarUser():
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+    if request.method == "POST":
+
+        email = request.form["username"]
+        print(email)
+        password = request.form["psw"]
+        print(password)
+        passHash = generate_password_hash(password, method="sha256")
+        print(email)
+        print(passHash)
+
+        cur.execute(
+            """
+            SELECT * FROM usuario WHERE correo LIKE '{0}'
+            """.format(
+                email
+            )
+        )
+
+        CorreoExistente = cur.fetchone()
+
+        if CorreoExistente:
+            contraHash = CorreoExistente["contrasena"]
+            verificarPass = check_password_hash(contraHash, password)
+            if verificarPass:
+                flash("Creedenciales VALIDOS")
+                return redirect(url_for("cat"))
+            else:
+                flash("Credenciales invalidos")
+                return redirect(url_for("login"))
+        else:
+            flash("Credenciales invalidos")
+            return redirect(url_for("login"))
+
+    conn.commit()
+    cur.close()
+    flash("Credenciales invalidos")
+    return redirect(url_for("login"))
 
 
 # Catalogo
@@ -402,35 +531,91 @@ def login():
 def cat():
     return render_template("catalogue.html")
 
+
 # Busqueda
 @app.route("/search")
 def search():
     return render_template("search.html")
+
 
 # Agregar anunciante
 @app.route("/addanu")
 def add_anunciante():
     return render_template("addAnu.html")
 
+
 # Agregar director
 @app.route("/adddir")
 def add_director():
     return render_template("addDir.html")
+
 
 # Agregar anuncio
 @app.route("/addad")
 def add_advertisment():
     return render_template("addAd.html")
 
+
 # Agregar actor
 @app.route("/addactor")
 def add_actor():
     return render_template("addAct.html")
 
+
 # Agregar trailer
 @app.route("/addtrailer")
 def add_trailer():
     return render_template("addTrailer.html")
+
+
+@app.route("/top10")
+def top10():
+    return render_template("top10Generos.html")
+
+
+@app.route("/horasPico")
+def horasPico():
+    return render_template("horasPicos.html")
+
+
+@app.route("/estadisticaHorasPico", methods=["POST"])
+def estadisticaHorasPico():
+
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    if request.method == "POST":
+        date = request.form["date"]
+        print(date)
+
+        cur.execute(
+            """SELECT TO_DATE('{0}','YYYY-MM-DD') as fecha;
+        SELECT DISTINCT r.fecha_rep::time AS tiempo
+        FROM reproduccion r 
+        WHERE r.fecha_rep::date BETWEEN fecha::date AND fecha::date
+        ORDER BY tiempo DESC 
+        LIMIT 3; """
+        ).format(date)
+
+        HorasPico = cur.fetchone()
+        conn.commit()
+        cur.close()
+        flash(HorasPico)
+
+        return render_template("horasPicos.html")
+
+
+@app.route("/cantRep")
+def cantRep():
+    return render_template("cantidadRepro.html")
+
+
+@app.route("/estadisticaGenero", methods=["POST"])
+def estadisticaGenero():
+    print("XD")
+
+
+@app.route("/estadisticaCantidad", methods=["POST"])
+def estadisticaCantidad():
+    print("XD")
 
 
 # Referencia: https://codeforgeek.com/render-html-file-in-flask/

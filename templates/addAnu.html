@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,15 +8,16 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/addanu.css') }}">
     <title>Document</title>
 </head>
+
 <body>
     {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            {% for message in messages %}
-                <div class="box-message">
-                    <p> {{ message }} </p>
-                </div>
-            {% endfor %}
-        {% endif %}
+    {% if messages %}
+    {% for message in messages %}
+    <div class="box-message">
+        <p> {{ message }} </p>
+    </div>
+    {% endfor %}
+    {% endif %}
     {% endwith %}
 
     <section class="container">
@@ -24,8 +26,8 @@
 
         <hr>
 
-        <form class="form" action="/agregarAnunciante" method="POST">
-            <input type="text" placeholder="Nombre" name="name" id="name" method="GET">
+        <form class="form" action="/agregarAnunciante" method="POST" required autocomplete="off">
+            <input type="text" placeholder="Nombre" name="name" id="name" method="GET" required>
             <input type="number" placeholder="ID" name="id" id="id" method="GET">
 
             <section class=" clearfix">
@@ -35,4 +37,5 @@
         </form>
     </section>
 </body>
+
 </html>

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,15 +8,16 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/adddir.css') }}">
     <title>Agregar director</title>
 </head>
+
 <body>
     {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            {% for message in messages %}
-                <div class="box-message">
-                    <p> {{ message }} </p>
-                </div>
-            {% endfor %}
-        {% endif %}
+    {% if messages %}
+    {% for message in messages %}
+    <div class="box-message">
+        <p> {{ message }} </p>
+    </div>
+    {% endfor %}
+    {% endif %}
     {% endwith %}
 
     <section class="container">
@@ -24,17 +26,16 @@
 
         <hr>
 
-        <form class="form" action="/agregarDirector" method="POST">
-            <input type="text" placeholder="Nombre" name="name" id="name" method="GET">
+        <form class="form" action="/agregarDirector" method="POST" autocomplete="off">
+            <input type="text" placeholder="Nombre" name="name" id="name" method="GET" required>
             <input type="text" placeholder="Apellido" name="lastname" id="lastname" method="GET">
-            <input type="number" placeholder="DPI" name="dpi" id="dpi" method="GET">
-
-            <section class=" clearfix">
-                <button type="submit" class="add-dir-btn" value="submit"> <a id="Add-Dir">Agregar</a>
-                </button>
-            </section>
-        </form>
+            <input type="numer" placeholder="DPI" name="dpi" id="dpi" method="GET" required section class=" clearfix">
+            <button type="submit" class="add-dir-btn" value="submit"> <a id="Add-Dir">Agregar</a>
+            </button>
+    </section>
+    </form>
     </section>
 
 </body>
+
 </html>

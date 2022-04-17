@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creacion de cuenta</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/accountType.css') }}">
+
+</head>
+
+<body>
+
+
+
+    <div class="container">
+
+        <h1 class="accountType">Tipo de cuenta
+        </h1>
+
+        <hr>
+
+        <form action="/tipoCuenta" method="POST" autocomplete="off">
+
+            <label id="isAdmin" for="isAdmin" method="GET">Elige tu tipo de cuenta</label>
+            <select id="isAdmin" name="isAdmin" method="GET">
+                <option value="Free">Gratis</option>
+                <option value="Basic">Básica</option>
+                <option value="Premium">Premium</option>
+            </select>
+
+            <h3>
+                Cuenta básica (gratis, 1 perfil),
+                estándar (pagada, máximo de 4 perfiles) y avanzada (pagada, máximo de 8 perfiles).
+            </h3>
+
+
+            <div class=" clearfix">
+                <button type="submit" class="signupbtn" value="submit"> <a id="crearCuenta">Guardar cambios</a>
+                </button>
+            </div>
+        </form>
+    </div>
+
+</body>
+
+
+</html>

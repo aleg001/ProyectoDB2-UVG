@@ -18,6 +18,7 @@ input[type="text"] {
 h1 {
   text-align: center;
   justify-content: center;
+  margin-right: 20%;
 }
 p {
   text-align: center;
@@ -81,6 +82,23 @@ button:hover {
 .signupbtn {
   float: left;
   margin-top: 5%;
+
+  width: 30%;
+  border-radius: 20px;
+
+  color: white;
+  text-decoration: none;
+  font-size: 18px;
+  letter-spacing: 1.5px;
+
+  overflow: hidden;
+
+  background-color: #00cb69c8;
+}
+
+.loginbtn {
+  float: left;
+  margin-top: 5%;
   margin-left: 25%;
   width: 30%;
   border-radius: 20px;
@@ -95,6 +113,14 @@ button:hover {
   background-color: #004ecbc8;
 }
 
+.MensajesFlash {
+  padding: 15px;
+  margin-bottom: 20px;
+  background-color: #07b69c;
+  border-radius: 40px;
+  color: white;
+}
+
 .container {
   padding: 40px;
 }
@@ -107,6 +133,9 @@ button:hover {
 
 @media screen and (max-width: 300px) {
   .signupbtn {
+    width: 100%;
+  }
+  .loginbtn {
     width: 100%;
   }
 }

@@ -10,24 +10,37 @@
 </head>
 
 <body>
+
     <div class="container">
         <h1>Login</h1>
         <hr>
 
+        <form action="/verificarUser" method="POST" autocomplete="off">
+            <p>Ingrese su correo y contraseña</p>
 
-        <p>Ingrese su usuario y contraseña</p>
-        <form class="form-group" action="/login/" method="post">
 
-            <input type="text" name="username" placeholder="Usuario" id="username" required>
-
-            <input type="password" name="psw" id="pass" placeholder="Contraseña" id="password" required>
-
-            <button type="submit" class="signupbtn" value="submit"> <a id="crearCuenta">Ingresar</a>
+            <input type="text" name="username" placeholder="Correo" id="username" method="GET">
+            <input type="password" name="psw" placeholder="Contraseña" id="psw" method="GET">
+            <button type="submit" class="loginbtn" value="submit" method="GET"> <a id="crearCuenta">Ingresar</a>
             </button>
+
+
+            <div class=" clearfix">
+                <button type="submit" class="signupbtn" method="GET"> <a id="signup">Crear cuenta</a> </button>
+            </div>
         </form>
-
-
     </div>
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for message in messages %}
+    <div class="box-message">
+        <p class="MensajesFlash"> {{ message }} </p>
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+
 
 </body>
 
