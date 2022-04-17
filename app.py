@@ -606,6 +606,10 @@ def verificarUser():
         passHash = generate_password_hash(password, method="sha256")
         # print(email)
         # print(passHash)
+        intentoFallido = IDIntentoFallido()
+        intentoFecha = FechaActual()
+        # print(intentoFallido)
+        # print(intentoFecha)
 
         cur.execute(
             """
@@ -626,24 +630,32 @@ def verificarUser():
             else:
                 contadorIntentosFallidos = contadorIntentosFallidos + 1
                 # print("CONTADOR 1: ", contadorIntentosFallidos)
-                flash("Credenciales invalidos")
+                cur.execute(
+                    """ 
+                INSERT INTO intentosFallidos VALUES ('{0}', '{1}', '{2}');
+                """.format(
+                        intentoFallido, email, intentoFecha
+                    )
+                )
+                flash("Contraseña equivocada")
                 return redirect(url_for("login"))
         else:
             contadorIntentosFallidos = contadorIntentosFallidos + 1
             # print("CONTADOR 2: ", contadorIntentosFallidos)
-            intentoFallido = IDIntentoFallido()
-            intentoFecha = FechaActual()
+
             cur.execute(
                 """ 
                 INSERT INTO intentosFallidos VALUES ('{0}', '{1}', '{2}');
-            """
-            ).format(intentoFallido, email, intentoFecha)
-            flash("Credenciales invalidos")
+            """.format(
+                    intentoFallido, email, intentoFecha
+                )
+            )
+            flash("Correo invalido")
             return redirect(url_for("login"))
 
     conn.commit()
     cur.close()
-    flash("Credenciales invalidos")
+    flash("Credenciales invalidos 3")
     # contadorIntentosFallidos = contadorIntentosFallidos + 1
     # print("CONTADOR FINAL: ", contadorIntentosFallidos)
     return redirect(url_for("login"))
