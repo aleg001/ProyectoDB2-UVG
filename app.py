@@ -22,44 +22,6 @@ import string
 import time
 from datetime import datetime
 
-
-# Creacion aleatoria de ID para usuario
-def IDUsuario():
-    randomID = "".join(
-        [random.choice(string.ascii_letters + string.digits) for n in range(50)]
-    )
-    return randomID
-
-
-def IDTrailerRandom():
-    randomID = "".join(
-        [random.choice(string.ascii_letters + string.digits) for n in range(80)]
-    )
-    return randomID
-
-
-def IDAnuncioRandom():
-    randomID = "".join(
-        [random.choice(string.ascii_letters + string.digits) for n in range(100)]
-    )
-    return randomID
-
-
-# Fecha de creacion de cuenta
-def CreationDate():
-    valorRaw = time.time()
-    timeObj = time.localtime(valorRaw)
-    stringUnificado = "{0}-{1}-{2} {3}:{4}:{5}".format(
-        timeObj.tm_mon,
-        timeObj.tm_mday,
-        timeObj.tm_year,
-        timeObj.tm_hour,
-        timeObj.tm_min,
-        timeObj.tm_sec,
-    )
-    return stringUnificado
-
-
 """
 Referencia para Flask + React:
 https://towardsdatascience.com/build-deploy-a-react-flask-app-47a89a5d17d9
@@ -127,6 +89,67 @@ Para verificar:
 check_password_hash(contraseñaEncriptada, contraseña)
 
 """
+
+# Creacion aleatoria de ID para usuario
+def IDUsuario():
+    randomID = "".join(
+        [random.choice(string.ascii_letters + string.digits) for n in range(50)]
+    )
+    return randomID
+
+
+def IDTrailerRandom():
+    randomID = "".join(
+        [random.choice(string.ascii_letters + string.digits) for n in range(80)]
+    )
+    return randomID
+
+
+def IDAnuncioRandom():
+    randomID = "".join(
+        [random.choice(string.ascii_letters + string.digits) for n in range(100)]
+    )
+    return randomID
+
+
+def IDIntentoFallido():
+    randomID = "".join(
+        [random.choice(string.ascii_letters + string.digits) for n in range(30)]
+    )
+    return randomID
+
+
+# Fecha de creacion de cuenta
+def CreationDate():
+    valorRaw = time.time()
+    timeObj = time.localtime(valorRaw)
+    stringUnificado = "{0}-{1}-{2} {3}:{4}:{5}".format(
+        timeObj.tm_mon,
+        timeObj.tm_mday,
+        timeObj.tm_year,
+        timeObj.tm_hour,
+        timeObj.tm_min,
+        timeObj.tm_sec,
+    )
+    return stringUnificado
+
+
+def FechaActual():
+    valorRaw = time.time()
+    timeObj = time.localtime(valorRaw)
+    stringUnificado = "{0}-{1}-{2} {3}:{4}:{5}".format(
+        timeObj.tm_mon,
+        timeObj.tm_mday,
+        timeObj.tm_year,
+        timeObj.tm_hour,
+        timeObj.tm_min,
+        timeObj.tm_sec,
+    )
+    return stringUnificado
+
+
+# Variable global
+contadorIntentosFallidos = 0
 
 
 @app.route("/horasPico")
@@ -572,7 +595,7 @@ def login():
 @app.route("/verificarUser", methods=["POST"])
 def verificarUser():
     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-    contadorIntentosFallidos = 0
+    global contadorIntentosFallidos
 
     if request.method == "POST":
 
@@ -602,20 +625,27 @@ def verificarUser():
                 return redirect(url_for("cat"))
             else:
                 contadorIntentosFallidos = contadorIntentosFallidos + 1
-                print("CONTADOR 1: ", contadorIntentosFallidos)
+                # print("CONTADOR 1: ", contadorIntentosFallidos)
                 flash("Credenciales invalidos")
                 return redirect(url_for("login"))
         else:
             contadorIntentosFallidos = contadorIntentosFallidos + 1
-            print("CONTADOR 2: ", contadorIntentosFallidos)
+            # print("CONTADOR 2: ", contadorIntentosFallidos)
+            intentoFallido = IDIntentoFallido()
+            intentoFecha = FechaActual()
+            cur.execute(
+                """ 
+                INSERT INTO intentosFallidos VALUES ('{0}', '{1}', '{2}');
+            """
+            ).format(intentoFallido, email, intentoFecha)
             flash("Credenciales invalidos")
             return redirect(url_for("login"))
 
     conn.commit()
     cur.close()
     flash("Credenciales invalidos")
-    contadorIntentosFallidos = contadorIntentosFallidos + 1
-    print("CONTADOR FINAL: ", contadorIntentosFallidos)
+    # contadorIntentosFallidos = contadorIntentosFallidos + 1
+    # print("CONTADOR FINAL: ", contadorIntentosFallidos)
     return redirect(url_for("login"))
 
 
