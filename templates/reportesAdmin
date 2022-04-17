@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/addact.css') }}">
+    <title>Reportes de Admin</title>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>Reportes para el administrador</h1>
+        <hr>
+
+        <form action="/verificarUser" method="POST" autocomplete="off">
+
+            <div class=" clearfix">
+                <button type="submit" class="signupbtn" method="GET"> <a id="signup">Top 10 géneros</a> </button>
+            </div>
+            <div class=" clearfix">
+                <button type="submit" class="signupbtn" method="GET"> <a id="signup">Cantidad de Reproducciones</a>
+                </button>
+            </div>
+            <div class=" clearfix">
+                <button type="submit" class="signupbtn" method="GET"> <a id="signup">Hora Pico</a> </button>
+            </div>
+        </form>
+    </div>
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for message in messages %}
+    <div class="box-message">
+        <p class="MensajesFlash"> {{ message }} </p>
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+
+</body>
+
+</html>

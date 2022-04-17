@@ -20,6 +20,7 @@ import psycopg2.extras
 import random
 import string
 import time
+from datetime import datetime
 
 
 # Creacion aleatoria de ID para usuario
@@ -584,27 +585,47 @@ def estadisticaHorasPico():
     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     if request.method == "POST":
         date = request.form["date"]
-        print(date)
 
         cur.execute(
-            """SELECT TO_DATE('{0}','YYYY-MM-DD') as fecha;
-        SELECT DISTINCT r.fecha_rep::time AS tiempo
+            """
+        SELECT tiempo FROM(
+        SELECT DISTINCT r.fecha_rep::time AS tiempo, count(*) as Conteo
         FROM reproduccion r 
-        WHERE r.fecha_rep::date BETWEEN fecha::date AND fecha::date
-        ORDER BY tiempo DESC 
-        LIMIT 3; """
-        ).format(date)
+        WHERE r.fecha_rep::date BETWEEN  (SELECT TO_DATE('{0}', 'YYYY-MM-DD')) AND  (SELECT TO_DATE('{0}', 'YYYY-MM-DD'))
+        GROUP by tiempo
+        ORDER BY Conteo DESC 
+        LIMIT 1) as xd; """.format(
+                date
+            )
+        )
 
-        HorasPico = cur.fetchone()
+        HorasPico = cur.fetchall()
+        print(HorasPico)
+        # [[datetime.time(21, 0)], [datetime.time(20, 0)], [datetime.time(16, 0)]]
+        horasPicoValue = str(HorasPico[0])
+        horasPicoValue = horasPicoValue.replace("[", "")
+        horasPicoValue = horasPicoValue.replace("]", "")
+        horasPicoValue = horasPicoValue.replace("(", " ")
+        horasPicoValue = horasPicoValue.replace(")", " hrs")
+        horasPicoValue = horasPicoValue.replace(",", ":")
+        horasPicoValue = horasPicoValue.replace(" ", "")
+        horasPicoValue = horasPicoValue.replace("datetime.time", "Hora pico: ")
+        print(horasPicoValue)
+        flash(horasPicoValue)
         conn.commit()
         cur.close()
-        flash(HorasPico)
 
         return render_template("horasPicos.html")
 
 
 @app.route("/cantRep")
 def cantRep():
+    return render_template("cantidadRepro.html")
+
+
+@app.route("/cantRepro")
+def cantRepro():
+
     return render_template("cantidadRepro.html")
 
 
@@ -615,6 +636,11 @@ def estadisticaGenero():
 
 @app.route("/estadisticaCantidad", methods=["POST"])
 def estadisticaCantidad():
+    print("XD")
+
+
+@app.route("/reportesAdmin", methods=["POST"])
+def reportesAdmin():
     print("XD")
 
 
