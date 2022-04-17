@@ -128,44 +128,89 @@ check_password_hash(contraseñaEncriptada, contraseña)
 
 """
 
-# Homepage
-@app.route("/")
-def index():
-    print("xd")
+
+@app.route("/horasPico")
+def horasPico():
+    return render_template("horasPicos.html")
 
 
-# Logout
-@app.route("/logout")
-def logout():
-    print("xd")
+@app.route("/estadisticaHorasPico", methods=["POST"])
+def estadisticaHorasPico():
 
-
-# Login de admin
-@app.route("/loginAdmin")
-def loginAcmon():
-    print("xd")
-
-
-# Logout de admin
-@app.route("/logoutAdmin")
-def logoutAcmon():
-    print("xd")
-
-
-# Perfil
-@app.route("/agregaPerfil", methods=["POST"])
-def profile(idPerfil):
-    print("xd")
     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     if request.method == "POST":
-        name = request.form[""]
-    return render_template("p-rofileSelector.html")
+        date = request.form["date"]
+
+        cur.execute(
+            """
+        SELECT tiempo FROM(
+        SELECT DISTINCT r.fecha_rep::time AS tiempo, count(*) as Conteo
+        FROM reproduccion r 
+        WHERE r.fecha_rep::date BETWEEN  (SELECT TO_DATE('{0}', 'YYYY-MM-DD')) AND  (SELECT TO_DATE('{0}', 'YYYY-MM-DD'))
+        GROUP by tiempo
+        ORDER BY Conteo DESC 
+        LIMIT 1) as xd; """.format(
+                date
+            )
+        )
+
+        HorasPico = cur.fetchall()
+        print(HorasPico)
+        # [[datetime.time(21, 0)], [datetime.time(20, 0)], [datetime.time(16, 0)]]
+        horasPicoValue = str(HorasPico[0])
+        horasPicoValue = horasPicoValue.replace("[", "")
+        horasPicoValue = horasPicoValue.replace("]", "")
+        horasPicoValue = horasPicoValue.replace("(", " ")
+        horasPicoValue = horasPicoValue.replace(")", " hrs")
+        horasPicoValue = horasPicoValue.replace(",", ":")
+        horasPicoValue = horasPicoValue.replace(" ", "")
+        horasPicoValue = horasPicoValue.replace("datetime.time", "Hora pico: ")
+        print(horasPicoValue)
+        flash(horasPicoValue)
+        conn.commit()
+        cur.close()
+
+        return render_template("horasPicos.html")
 
 
-# Perfil de admin
-@app.route("/adminProfile")
-def acmonProfile():
-    print("xd")
+@app.route("/cantRepro", methods=["POST"])
+def cantRepro():
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    if request.method == "POST":
+        date1 = request.form["dateI"]
+        date2 = request.form["dateF"]
+
+        cur.execute(
+            """
+            SELECT COUNT(r.*) AS cant_reps, t.categoria_t, s.tipo 
+            FROM reproduccion r
+            LEFT JOIN trailer t ON r.id_vid = t.id_trailer
+            LEFT JOIN perfil p ON r.id_per = p.id_perfil
+            LEFT JOIN suscripcion s ON p.id_usuario = s.id_user
+            WHERE r.fecha_rep::date BETWEEN (SELECT TO_DATE('{0}', 'YYYY-MM-DD')) and (SELECT TO_DATE('{1}', 'YYYY-MM-DD')) 
+            GROUP BY t.genero_t, t.categoria_t, s.tipo 
+            ORDER BY cant_reps DESC;
+            """.format(
+                date1, date2
+            )
+        )
+
+        Repros = cur.fetchall()
+        strTemp = ""
+        strFinal = ""
+        """"
+        for i in Repros:
+            strTemp = str(Repros[i])
+            strFinal = strTemp.replace("[", "")
+            strFinal = strTemp.replace("]", "")
+            strFinal = strTemp.replace("(", " ")
+            strFinal = strTemp.replace(")", "")"""
+
+        flash(Repros)
+        conn.commit()
+        cur.close()
+        # cantidadrepro = cur.fetchall()
+    return render_template("cantidadRepro.html")
 
 
 @app.route("/agregarUser", methods=["POST"])
@@ -209,6 +254,46 @@ def agregarUser():
     conn.commit()
     cur.close()
     return redirect(url_for("login"))
+
+
+# Homepage
+@app.route("/")
+def index():
+    return redirect(url_for("login"))
+
+
+# Logout
+@app.route("/logout")
+def logout():
+    print("xd")
+
+
+# Login de admin
+@app.route("/loginAdmin")
+def loginAcmon():
+    print("xd")
+
+
+# Logout de admin
+@app.route("/logoutAdmin")
+def logoutAcmon():
+    print("xd")
+
+
+# Perfil
+@app.route("/agregaPerfil", methods=["POST"])
+def profile(idPerfil):
+    print("xd")
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    if request.method == "POST":
+        name = request.form[""]
+    return render_template("p-rofileSelector.html")
+
+
+# Perfil de admin
+@app.route("/adminProfile")
+def acmonProfile():
+    print("xd")
 
 
 # Agregar un nuevo director
@@ -487,16 +572,17 @@ def login():
 @app.route("/verificarUser", methods=["POST"])
 def verificarUser():
     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    contadorIntentosFallidos = 0
 
     if request.method == "POST":
 
         email = request.form["username"]
-        print(email)
+        # print(email)
         password = request.form["psw"]
-        print(password)
+        # print(password)
         passHash = generate_password_hash(password, method="sha256")
-        print(email)
-        print(passHash)
+        # print(email)
+        # print(passHash)
 
         cur.execute(
             """
@@ -515,15 +601,21 @@ def verificarUser():
                 flash("Creedenciales VALIDOS")
                 return redirect(url_for("cat"))
             else:
+                contadorIntentosFallidos = contadorIntentosFallidos + 1
+                print("CONTADOR 1: ", contadorIntentosFallidos)
                 flash("Credenciales invalidos")
                 return redirect(url_for("login"))
         else:
+            contadorIntentosFallidos = contadorIntentosFallidos + 1
+            print("CONTADOR 2: ", contadorIntentosFallidos)
             flash("Credenciales invalidos")
             return redirect(url_for("login"))
 
     conn.commit()
     cur.close()
     flash("Credenciales invalidos")
+    contadorIntentosFallidos = contadorIntentosFallidos + 1
+    print("CONTADOR FINAL: ", contadorIntentosFallidos)
     return redirect(url_for("login"))
 
 
@@ -574,92 +666,8 @@ def top10():
     return render_template("top10Generos.html")
 
 
-@app.route("/horasPico")
-def horasPico():
-    return render_template("horasPicos.html")
-
-
-@app.route("/estadisticaHorasPico", methods=["POST"])
-def estadisticaHorasPico():
-
-    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-    if request.method == "POST":
-        date = request.form["date"]
-
-        cur.execute(
-            """
-        SELECT tiempo FROM(
-        SELECT DISTINCT r.fecha_rep::time AS tiempo, count(*) as Conteo
-        FROM reproduccion r 
-        WHERE r.fecha_rep::date BETWEEN  (SELECT TO_DATE('{0}', 'YYYY-MM-DD')) AND  (SELECT TO_DATE('{0}', 'YYYY-MM-DD'))
-        GROUP by tiempo
-        ORDER BY Conteo DESC 
-        LIMIT 1) as xd; """.format(
-                date
-            )
-        )
-
-        HorasPico = cur.fetchall()
-        print(HorasPico)
-        # [[datetime.time(21, 0)], [datetime.time(20, 0)], [datetime.time(16, 0)]]
-        horasPicoValue = str(HorasPico[0])
-        horasPicoValue = horasPicoValue.replace("[", "")
-        horasPicoValue = horasPicoValue.replace("]", "")
-        horasPicoValue = horasPicoValue.replace("(", " ")
-        horasPicoValue = horasPicoValue.replace(")", " hrs")
-        horasPicoValue = horasPicoValue.replace(",", ":")
-        horasPicoValue = horasPicoValue.replace(" ", "")
-        horasPicoValue = horasPicoValue.replace("datetime.time", "Hora pico: ")
-        print(horasPicoValue)
-        flash(horasPicoValue)
-        conn.commit()
-        cur.close()
-
-        return render_template("horasPicos.html")
-
-
 @app.route("/cantRep")
 def cantRep():
-    return render_template("cantidadRepro.html")
-
-
-@app.route("/cantRepro", methods=["POST"])
-def cantRepro():
-    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-    if request.method == "POST":
-        date1 = request.form["dateI"]
-        date2 = request.form["dateF"]
-
-        cur.execute(
-            """
-            SELECT COUNT(r.*) AS cant_reps, t.categoria_t, s.tipo 
-            FROM reproduccion r
-            LEFT JOIN trailer t ON r.id_vid = t.id_trailer
-            LEFT JOIN perfil p ON r.id_per = p.id_perfil
-            LEFT JOIN suscripcion s ON p.id_usuario = s.id_user
-            WHERE r.fecha_rep::date BETWEEN (SELECT TO_DATE('{0}', 'YYYY-MM-DD')) and (SELECT TO_DATE('{1}', 'YYYY-MM-DD')) 
-            GROUP BY t.genero_t, t.categoria_t, s.tipo 
-            ORDER BY cant_reps DESC;
-            """.format(
-                date1, date2
-            )
-        )
-
-        Repros = cur.fetchall()
-        strTemp = ""
-        strFinal = ""
-        """"
-        for i in Repros:
-            strTemp = str(Repros[i])
-            strFinal = strTemp.replace("[", "")
-            strFinal = strTemp.replace("]", "")
-            strFinal = strTemp.replace("(", " ")
-            strFinal = strTemp.replace(")", "")"""
-
-        flash(Repros)
-        conn.commit()
-        cur.close()
-        # cantidadrepro = cur.fetchall()
     return render_template("cantidadRepro.html")
 
 

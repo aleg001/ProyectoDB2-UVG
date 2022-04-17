@@ -19,14 +19,15 @@
             <p>Ingrese su correo y contraseña</p>
 
 
-            <input type="text" name="username" placeholder="Correo" id="username" method="GET">
-            <input type="password" name="psw" placeholder="Contraseña" id="psw" method="GET">
+            <input type="text" name="username" placeholder="Correo" id="username" method="GET" required>
+            <input type="password" name="psw" placeholder="Contraseña" id="psw" method="GET" required>
             <button type="submit" class="loginbtn" value="submit" method="GET"> <a id="crearCuenta">Ingresar</a>
             </button>
 
 
             <div class=" clearfix">
-                <button type="submit" class="signupbtn" method="GET"> <a id="signup">Crear cuenta</a> </button>
+                <button type="submit" class="signupbtn" method="GET"> <a href="signup" id=" signup">Crear cuenta</a>
+                </button>
             </div>
         </form>
     </div>
