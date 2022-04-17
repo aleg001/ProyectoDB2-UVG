@@ -246,13 +246,30 @@ def agregarUser():
     if request.method == "POST":
 
         name = request.form["name"]
+        # Sanitacion de inputs
+        name = name.replace("'", "")
+        name = name.replace("--", "")
         lastname = request.form["lastname"]
+        # Sanitacion de inputs
+        lastname = lastname.replace("'", "")
+        lastname = lastname.replace("--", "")
         birthdate = request.form["birthdate"]
         email = request.form["email"]
+        # Sanitacion de inputs
+        email = email.replace("'", "")
+        email = email.replace("--", "")
         username = request.form["username"]
+        # Sanitacion de inputs
+        username = username.replace("'", "")
+        username = username.replace("--", "")
         password = request.form["pass"]
+        password = password.replace("'", "")
+        password = password.replace("--", "")
         passHash = generate_password_hash(password, method="sha256")
         dpi = request.form["DPI"]
+        # Sanitacion de inputs
+        dpi = dpi.replace("'", "")
+        dpi = dpi.replace("--", "")
         isAdmin = request.form["isAdmin"]
 
         # Creacion de cuenta
@@ -326,8 +343,17 @@ def agregarDirector():
     return_var = "add_director"
     if request.method == "POST":
         name = request.form["name"]
+        # Sanitazacion de inputs
+        name = name.replace("'", "")
+        name = name.replace("--", "")
         lastname = request.form["lastname"]
+        # Sanitazacion de inputs
+        lastname = lastname.replace("'", "")
+        lastname = lastname.replace("--", "")
         dpi = request.form["dpi"]
+        # Sanitazacion de inputs
+        dpi = dpi.replace("'", "")
+        dpi = dpi.replace("--", "")
 
         cur.execute(
             """
@@ -364,8 +390,19 @@ def agregarActor():
     if request.method == "POST":
 
         name = request.form["name"]
+        # Sanitazacion de inputs
+        name = name.replace("'", "")
+        name = name.replace("--", "")
+
         lastname = request.form["lastname"]
+        # Sanitazacion de inputs
+        lastname = lastname.replace("'", "")
+        lastname = lastname.replace("--", "")
+
         dpi = request.form["dpi"]
+        # Sanitazacion de inputs
+        dpi = dpi.replace("'", "")
+        dpi = dpi.replace("--", "")
 
         cur.execute(
             """
@@ -400,7 +437,14 @@ def agregarAnunciante():
     return_var = "add_anunciante"
     if request.method == "POST":
         name = request.form["name"]
+        # Sanitazacion de inputs
+        name = name.replace("'", "")
+        name = name.replace("--", "")
+
         id = request.form["id"]
+        # Sanitazacion de inputs
+        id = id.replace("'", "")
+        id = id.replace("--", "")
 
         cur.execute(
             """
@@ -436,8 +480,14 @@ def agregarAnuncio():
     anuncioID = IDAnuncioRandom()
     if request.method == "POST":
         id = request.form["id_anun"]
+        # Sanitazacion de inputs
+        id = id.replace("'", "")
+        id = id.replace("--", "")
         url_ad = request.form["url"]
         descri = request.form["desc"]
+        # Sanitazacion de inputs
+        descri = descri.replace("'", "")
+        descri = descri.replace("--", "")
 
         cur.execute(
             """
@@ -474,17 +524,46 @@ def agregarTrailer():
     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     if request.method == "POST":
         IDTrailer = request.form["id"]
+        # Sanitazacion de inputs
+        IDTrailer = IDTrailer.replace("'", "")
+        IDTrailer = IDTrailer.replace("--", "")
         title = request.form["title"]
+        # Sanitazacion de inputs
+        title = title.replace("'", "")
+        title = title.replace("--", "")
         genre = request.form["genre"]
+        # Sanitazacion de inputs
+        genre = genre.replace("'", "")
+        genre = genre.replace("--", "")
         category = request.form["category"]
+        # Sanitazacion de inputs
+        category = category.replace("'", "")
+        category = category.replace("--", "")
         tiempo = request.form["time"]
+        # Sanitazacion de inputs
+        tiempo = tiempo.replace("'", "")
+        tiempo = tiempo.replace("--", "")
         director = request.form["director"]
+        # Sanitazacion de inputs
+        director = director.replace("'", "")
+        director = director.replace("--", "")
         prota = request.form["prota"]
+        # Sanitazacion de inputs
+        prota = prota.replace("'", "")
+        prota = prota.replace("--", "")
         premios = request.form["awards"]
+        # Sanitazacion de inputs
+        premios = premios.replace("'", "")
+        premios = premios.replace("--", "")
         estreno = request.form["date"]
         url = request.form["url"]
         resumen = request.form["summary"]
+        # Sanitazacion de inputs
+        resumen = resumen.replace("'", "")
+        resumen = resumen.replace("--", "")
         anuncio = request.form["ad"]
+        anuncio = anuncio.replace("'", "")
+        anuncio = anuncio.replace("--", "")
 
         cur.execute(
             """
@@ -600,14 +679,21 @@ def verificarUser():
     if request.method == "POST":
 
         email = request.form["username"]
-        # print(email)
+        # Sanitazacion de inputs
+        email = email.replace("'", "")
+        email = email.replace("--", "")
+
         password = request.form["psw"]
+        # Sanitazacion de inputs
+        password = password.replace("'", "")
+        password = password.replace("--", "")
         # print(password)
         passHash = generate_password_hash(password, method="sha256")
         # print(email)
         # print(passHash)
         intentoFallido = IDIntentoFallido()
         intentoFecha = FechaActual()
+
         # print(intentoFallido)
         # print(intentoFecha)
 
