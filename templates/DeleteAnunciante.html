@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/adddir.css') }}">
+    <title>Eliminar anunciante</title>
+</head>
+
+<body>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for message in messages %}
+    <div class="box-message">
+        <p> {{ message }} </p>
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    <section class="container">
+
+        <p class="title">Ingrese el ID del anunciante que desea eliminar</p>
+
+        <hr>
+
+        <form class="form" action="/eliminarAnunciante" method="POST" autocomplete="off">
+            <input type="number" placeholder="ID del anunciante" name="id" id="id" method="GET" required>
+            <button type="submit" class="add-dir-btn" value="submit"> <a id="Add-Dir">Eliminar</a>
+            </button>
+    </section>
+    </form>
+    </section>
+
+</body>
+
+</html>
+
+</html>

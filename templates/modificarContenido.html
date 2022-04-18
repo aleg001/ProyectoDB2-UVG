@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/reportesAdmin.css') }}">
+    <title>Manejo de contenido</title>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>Modificar contenido</h1>
+        <hr>
+
+
+
+        <div class=" clearfix">
+            <button type="submit" class="signupbtn" method="GET"> <a id="signup" href="addactor">Agregar
+                    actor</a>
+            </button>
+        </div>
+        <div class=" clearfix">
+            <button type="submit" class="signupbtn" method="GET"> <a id="signup" href="adddir">Agregar director</a>
+            </button>
+        </div>
+
+        <div class=" clearfix">
+            <button type="submit" class="signupbtn" method="GET"> <a id="signup" href="deleteactor">Eliminar
+                    actor</a>
+            </button>
+        </div>
+        <div class=" clearfix">
+            <button type="submit" class="signupbtn" method="GET"> <a id="signup" href="deletedir">Eliminar director</a>
+            </button>
+        </div>
+
+        <div class=" clearfix">
+            <button type="submit" class="signupbtn" method="GET"> <a id="signup" href="modact">Modificar
+                    actor</a>
+            </button>
+        </div>
+        <div class=" clearfix">
+            <button type="submit" class="signupbtn" method="GET"> <a id="signup" href="moddirector">Modificar
+                    director</a>
+            </button>
+        </div>
+
+
+
+
+
+
+
+    </div>
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for message in messages %}
+    <div class="box-message">
+        <p class="MensajesFlash"> {{ message }} </p>
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+
+</body>
+
+</html>

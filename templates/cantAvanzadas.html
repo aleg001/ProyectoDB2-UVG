@@ -7,13 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/horasPico.css') }}">
     <title>Cantidad de cuentas avanzadas</title>
-</head {% with messages=get_flashed_messages() %} {% if messages %} {% for message in messages %} <div
-    class="box-message">
-<p class="MensajesFlash"> {{ message }} </p>
-{% endfor %}
-{% endif %}
-{% endwith %}
-
+</head>
 
 <body>
     <section class="container">
@@ -30,7 +24,18 @@
             </section>
         </form>
 
-
+    </section>
+    <section>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <ul class="MensajesFlash">
+            {% for message in messages %}
+            {{ message }}<br>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
+        {% block body %}{% endblock %}
     </section>
 </body>
 

@@ -12,7 +12,7 @@ Cristian Aguirre - 20231
 # imports
 from urllib import request
 from flask import *
-from flask import flash
+from flask import flash, session
 import os
 import urllib.parse as up
 import psycopg2 as bd
@@ -360,7 +360,28 @@ def actoresDir2():
         """.format()
         )
         actoresdirectores = cur.fetchall()
-        flash(actoresdirectores)
+        primerAct = str(actoresdirectores[0])
+        segundoAct = str(actoresdirectores[1])
+        tercerAct = str(actoresdirectores[2])
+        cuartoAct = str(actoresdirectores[3])
+        QuintoAct = str(actoresdirectores[4])
+        SextoAct = str(actoresdirectores[5])
+        SepAct = str(actoresdirectores[6])
+        OctAct = str(actoresdirectores[7])
+        NovAct = str(actoresdirectores[8])
+        DecAct = str(actoresdirectores[9])
+
+        ImpresionActores(primerAct)
+        ImpresionActores(segundoAct)
+        ImpresionActores(tercerAct)
+        ImpresionActores(cuartoAct)
+        ImpresionActores(QuintoAct)
+        ImpresionActores(SextoAct)
+        ImpresionActores(SepAct)
+        ImpresionActores(OctAct)
+        ImpresionActores(NovAct)
+        ImpresionActores(DecAct)
+
         conn.commit()
         cur.close()
     return render_template("top10Act.html")
@@ -529,6 +550,44 @@ def agregarUser():
     return redirect(url_for("login"))
 
 
+# Eliminar un usuario
+@app.route("/eliminarUsuario", methods=["POST"])
+def eliminarUsuario():
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    return_var = "deleteuser"
+    if request.method == "POST":
+        id = request.form["id"]
+        # Sanitazacion de inputs
+        id = id.replace("'", "")
+        id = id.replace("--", "")
+
+        cur.execute(
+            """
+            SELECT * FROM usuario WHERE id like '{0}';
+            """.format(
+                id
+            )
+        )
+        variable = cur.fetchone()
+
+        if variable:
+            # Eliminacion de anunciante
+            cur.execute(
+                """
+                DELETE FROM usuario WHERE id like ('{0}');
+                """.format(
+                    id
+                )
+            )
+            return_var = "cat"
+            conn.commit()
+        else:
+            flash("El usuario ingresado no existe")
+        cur.close()
+
+    return redirect(url_for(return_var))
+
+
 # Homepage
 @app.route("/")
 def index():
@@ -581,8 +640,18 @@ def adminLog():
             contraHash = CorreoExistente["contrasena"]
             verificarPass = check_password_hash(contraHash, password)
             if verificarPass:
-                flash("Creedenciales VALIDOS")
-                return redirect(url_for("menuAdmin"))
+                cur.execute(
+                    """
+                    SELECT id_perfil FROM perfil p
+                    LEFT JOIN usuario u ON p.id_usuario = u.id
+                    WHERE u.correo LIKE '{0}'
+                    """.format(
+                        email
+                    )
+                )
+                idactual = cur.fetchone()
+                session["idactualperfil"] = idactual
+                return redirect(url_for("menuadmin"))
             else:
                 # contadorIntentosFallidos = contadorIntentosFallidos + 1
                 # print("CONTADOR 1: ", contadorIntentosFallidos)
@@ -623,10 +692,16 @@ def loginAdmin():
     return render_template("loginAdmin.html")
 
 
-# Logout de admin
-@app.route("/logoutAdmin")
-def logoutAcmon():
-    print("xd")
+# menu de admin
+@app.route("/menuadmin")
+def menuadmin():
+    return render_template("menuAdmin.html")
+
+
+# manejar de anuncios
+@app.route("/manAnu")
+def manAnu():
+    return render_template("manejarAnuncios.html")
 
 
 # Perfil
@@ -684,8 +759,96 @@ def agregarDirector():
                     dpi, name, lastname
                 )
             )
-            return_var = "cat"
+            return_var = "menuadmin"
             conn.commit()
+        cur.close()
+
+    return redirect(url_for(return_var))
+
+
+# Eliminar un  director
+@app.route("/eliminarDirector", methods=["POST"])
+def eliminarDirector():
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    return_var = "deletedir"
+    if request.method == "POST":
+        id = request.form["id"]
+        # Sanitazacion de inputs
+        id = id.replace("'", "")
+        id = id.replace("--", "")
+
+        cur.execute(
+            """
+            SELECT * FROM director WHERE id_director = '{0}';
+            """.format(
+                id
+            )
+        )
+        variable = cur.fetchone()
+
+        if variable:
+            # Eliminacion de director
+            cur.execute(
+                """
+                DELETE FROM director WHERE id_director like '{0}';
+                """.format(
+                    id
+                )
+            )
+            return_var = "menuadmin"
+            conn.commit()
+        else:
+            flash("El director ingresado no existe")
+        cur.close()
+
+    return redirect(url_for(return_var))
+
+
+# Modificar un director
+@app.route("/modDirector", methods=["POST"])
+def modDirector():
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    return_var = "moddirector"
+    if request.method == "POST":
+        name = request.form["name"]
+        # Sanitazacion de inputs
+        name = name.replace("'", "")
+        name = name.replace("--", "")
+        lastname = request.form["lastname"]
+        # Sanitazacion de inputs
+        lastname = lastname.replace("'", "")
+        lastname = lastname.replace("--", "")
+        dpi = request.form["dpi"]
+        # Sanitazacion de inputs
+        dpi = dpi.replace("'", "")
+        dpi = dpi.replace("--", "")
+
+        cur.execute(
+            """
+            SELECT * FROM director WHERE id_director = '{0}';
+            """.format(
+                dpi
+            )
+        )
+        variable = cur.fetchone()
+
+        if variable:
+            # Creacion de nuevo actor
+            cur.execute(
+                """
+                UPDATE director
+                 SET id_director ='{0}',
+                    nombre='{1}',
+                    apellido='{2}'
+                 WHERE id_director like '{3}';
+                """.format(
+                    dpi, name, lastname, dpi
+                )
+            )
+            conn.commit()
+            return_var = "menuadmin"
+        else:
+            flash("El director no existe")
         cur.close()
 
     return redirect(url_for(return_var))
@@ -734,8 +897,98 @@ def agregarActor():
                 )
             )
             conn.commit()
-            return_var = "cat"
+            return_var = "menuadmin"
         cur.close()
+    return redirect(url_for(return_var))
+
+
+# Modificar un actor
+@app.route("/modActor", methods=["POST"])
+def modActor():
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    return_var = "modact"
+    if request.method == "POST":
+
+        name = request.form["name"]
+        # Sanitazacion de inputs
+        name = name.replace("'", "")
+        name = name.replace("--", "")
+
+        lastname = request.form["lastname"]
+        # Sanitazacion de inputs
+        lastname = lastname.replace("'", "")
+        lastname = lastname.replace("--", "")
+
+        dpi = request.form["dpi"]
+        # Sanitazacion de inputs
+        dpi = dpi.replace("'", "")
+        dpi = dpi.replace("--", "")
+
+        cur.execute(
+            """
+            SELECT * FROM actor WHERE id_actor = '{0}';
+            """.format(
+                dpi
+            )
+        )
+        variable = cur.fetchone()
+
+        if variable:
+            # Creacion de nuevo actor
+            cur.execute(
+                """
+                UPDATE actor
+                 SET id_actor='{0}',
+                    nombre='{1}',
+                    apellido='{2}'
+                 WHERE id_actor like '{3}';
+                """.format(
+                    dpi, name, lastname, dpi
+                )
+            )
+            conn.commit()
+            return_var = "menuadmin"
+        else:
+            flash("El actor no existe")
+        cur.close()
+    return redirect(url_for(return_var))
+
+
+# Eliminar un  actor
+@app.route("/eliminarActor", methods=["POST"])
+def eliminarActor():
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    return_var = "deletetrailer"
+    if request.method == "POST":
+        id = request.form["id"]
+        # Sanitazacion de inputs
+        id = id.replace("'", "")
+        id = id.replace("--", "")
+
+        cur.execute(
+            """
+            SELECT * FROM actor WHERE id_actor like '{0}';
+            """.format(
+                id
+            )
+        )
+        variable = cur.fetchone()
+
+        if variable:
+            # Eliminacion de director
+            cur.execute(
+                """
+                DELETE FROM actor WHERE id_actor like ('{0}');
+                """.format(
+                    id
+                )
+            )
+            return_var = "menuadmin"
+            conn.commit()
+        else:
+            flash("El actor ingresado no existe")
+        cur.close()
+
     return redirect(url_for(return_var))
 
 
@@ -775,13 +1028,52 @@ def agregarAnunciante():
                     id, name
                 )
             )
-            return_var = "cat"
+            return_var = "menuadmin"
             conn.commit()
         cur.close()
 
     return redirect(url_for(return_var))
 
 
+# Eliminar un  anunciante
+@app.route("/eliminarAnunciante", methods=["POST"])
+def eliminarAnunciante():
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    return_var = "deleteanu"
+    if request.method == "POST":
+        id = request.form["id"]
+        # Sanitazacion de inputs
+        id = id.replace("'", "")
+        id = id.replace("--", "")
+
+        cur.execute(
+            """
+            SELECT * FROM anunciante WHERE id_anunciante like '{0}';
+            """.format(
+                id
+            )
+        )
+        variable = cur.fetchone()
+
+        if variable:
+            # Eliminacion de anunciante
+            cur.execute(
+                """
+                DELETE FROM anunciante WHERE id_anunciante like ('{0}');
+                """.format(
+                    id
+                )
+            )
+            return_var = "menuadmin"
+            conn.commit()
+        else:
+            flash("El anunciante ingresado no existe")
+        cur.close()
+
+    return redirect(url_for(return_var))
+
+
+# Agregar anuncio
 @app.route("/agregarAnuncio", methods=["POST"])
 def agregarAnuncio():
     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
@@ -816,11 +1108,101 @@ def agregarAnuncio():
                     anuncioID, id, url_ad, descri
                 )
             )
-            return_var = "cat"
+            return_var = "menuadmin"
 
             conn.commit()
         else:
             flash("El anunciante ingresado no existe")
+        cur.close()
+
+    return redirect(url_for(return_var))
+
+
+# Modificar anuncio
+@app.route("/modAnuncio", methods=["POST"])
+def modAnuncio():
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    return_var = "modanuncio"
+    if request.method == "POST":
+        anuncioID = request.form["id"]
+        # Sanitazacion de inputs
+        anuncioID = anuncioID.replace("'", "")
+        anuncioID = anuncioID.replace("--", "")
+        id = request.form["id_anun"]
+        # Sanitazacion de inputs
+        id = id.replace("'", "")
+        id = id.replace("--", "")
+        url_ad = request.form["url"]
+        descri = request.form["desc"]
+        # Sanitazacion de inputs
+        descri = descri.replace("'", "")
+        descri = descri.replace("--", "")
+
+        cur.execute(
+            """
+            SELECT * FROM anuncio WHERE id_anuncio = '{0}';
+            """.format(
+                id
+            )
+        )
+        variable2 = cur.fetchone()
+
+        if variable2:
+            # Creacion de nuevo actor
+            cur.execute(
+                """
+                UPDATE anuncio
+                 SET id_anuncio='{0}',
+                    id_anun='{1}',
+                    url_ad='{2}',
+                    texto='{3}'
+                 WHERE id_anuncio like '{0}';
+                """.format(
+                    anuncioID, id, url_ad, descri
+                )
+            )
+            conn.commit()
+            return_var = "menuadmin"
+        else:
+            flash("El anuncio ingresado no existe")
+        cur.close()
+
+    return redirect(url_for(return_var))
+
+
+# Eliminar un anuncio
+@app.route("/eliminarAnuncio", methods=["POST"])
+def eliminarAnuncio():
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    return_var = "deletead"
+    if request.method == "POST":
+        id = request.form["id"]
+        # Sanitazacion de inputs
+        id = id.replace("'", "")
+        id = id.replace("--", "")
+
+        cur.execute(
+            """
+            SELECT * FROM anuncio WHERE id_anuncio like '{0}';
+            """.format(
+                id
+            )
+        )
+        variable = cur.fetchone()
+
+        if variable:
+            # Eliminacion de anunciante
+            cur.execute(
+                """
+                DELETE FROM anuncio WHERE id_anuncio like ('{0}');
+                """.format(
+                    id
+                )
+            )
+            return_var = "menuadmin"
+            conn.commit()
+        else:
+            flash("El anuncio ingresado no existe")
         cur.close()
 
     return redirect(url_for(return_var))
@@ -952,7 +1334,7 @@ def agregarTrailer():
                                     )
                                 )
                                 conn.commit()
-                                return_var = "cat"
+                                return_var = "menuadmin"
                             else:
                                 flash("El anuncio ingresado no existe")
                         else:
@@ -965,6 +1347,142 @@ def agregarTrailer():
             else:
                 flash("El genero ingresado no existe")
         cur.close()
+    return redirect(url_for(return_var))
+
+
+# Modificar Trailer
+@app.route("/modTrailer", methods=["POST"])
+def modTrailer():
+    return_var = "modtrailer"
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    if request.method == "POST":
+        IDTrailer = request.form["id"]
+        # Sanitazacion de inputs
+        IDTrailer = IDTrailer.replace("'", "")
+        IDTrailer = IDTrailer.replace("--", "")
+        title = request.form["title"]
+        # Sanitazacion de inputs
+        title = title.replace("'", "")
+        title = title.replace("--", "")
+        genre = request.form["genre"]
+        # Sanitazacion de inputs
+        genre = genre.replace("'", "")
+        genre = genre.replace("--", "")
+        category = request.form["category"]
+        # Sanitazacion de inputs
+        category = category.replace("'", "")
+        category = category.replace("--", "")
+        tiempo = request.form["time"]
+        # Sanitazacion de inputs
+        tiempo = tiempo.replace("'", "")
+        tiempo = tiempo.replace("--", "")
+        director = request.form["director"]
+        # Sanitazacion de inputs
+        director = director.replace("'", "")
+        director = director.replace("--", "")
+        prota = request.form["prota"]
+        # Sanitazacion de inputs
+        prota = prota.replace("'", "")
+        prota = prota.replace("--", "")
+        premios = request.form["awards"]
+        # Sanitazacion de inputs
+        premios = premios.replace("'", "")
+        premios = premios.replace("--", "")
+        estreno = request.form["date"]
+        url = request.form["url"]
+        resumen = request.form["summary"]
+        # Sanitazacion de inputs
+        resumen = resumen.replace("'", "")
+        resumen = resumen.replace("--", "")
+        anuncio = request.form["ad"]
+        anuncio = anuncio.replace("'", "")
+        anuncio = anuncio.replace("--", "")
+
+        cur.execute(
+            """
+            SELECT * FROM trailer WHERE id_trailer = '{0}';
+            """.format(
+                IDTrailer
+            )
+        )
+        existencia = cur.fetchone()
+
+        if existencia == None:
+            flash("El trailer no existe")
+        else:
+
+            cur.execute(
+                """
+                UPDATE trailer
+                SET id_trailer='{0}',
+                    titulo='{1}',
+                    genero_t='{2}',
+                    categoria_t='{3}',
+                    fechaestreno = '{4}',
+                    director_t = '{5}',
+                    actorprincipal = '{6}',
+                    premiosganados = '{7}',
+                    url='{8}',
+                    summary='{9}',
+                    ad='{10}',
+                    tiempo_rep='{11}'
+                WHERE id_trailer like '{0}';
+                """.format(
+                    IDTrailer,
+                    title,
+                    genre,
+                    category,
+                    estreno,
+                    director,
+                    prota,
+                    premios,
+                    url,
+                    resumen,
+                    anuncio,
+                    tiempo,
+                )
+            )
+            conn.commit()
+            return_var = "menuadmin"
+        cur.close()
+    return redirect(url_for(return_var))
+
+
+# Eliminar un  trailer
+@app.route("/eliminarTrailer", methods=["POST"])
+def eliminarTrailer():
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    return_var = "deletetrailer"
+    if request.method == "POST":
+        id = request.form["id"]
+        # Sanitazacion de inputs
+        id = id.replace("'", "")
+        id = id.replace("--", "")
+
+        cur.execute(
+            """
+            SELECT * FROM trailer WHERE id_trailer = '{0}';
+            """.format(
+                id
+            )
+        )
+        variable = cur.fetchone()
+
+        if variable:
+            # Eliminacion de director
+            cur.execute(
+                """
+                DELETE FROM trailer WHERE id_trailer like ('{0}');
+                """.format(
+                    id
+                )
+            )
+            return_var = "cat"
+            conn.commit()
+        else:
+            flash("El trailer ingresado no existe")
+        cur.close()
+
     return redirect(url_for(return_var))
 
 
@@ -1021,7 +1539,19 @@ def verificarUser():
             verificarPass = check_password_hash(contraHash, password)
             if verificarPass:
                 flash("Creedenciales VALIDOS")
+                cur.execute(
+                    """
+                    SELECT id_perfil FROM perfil p
+                    LEFT JOIN usuario u ON p.id_usuario = u.id
+                    WHERE u.correo LIKE '{0}'
+                    """.format(
+                        email
+                    )
+                )
+                idactual = cur.fetchone()
+                session["idactualperfil"] = idactual
                 return redirect(url_for("cat"))
+
             else:
                 contadorIntentosFallidos = contadorIntentosFallidos + 1
                 # print("CONTADOR 1: ", contadorIntentosFallidos)
@@ -1056,6 +1586,18 @@ def verificarUser():
     return redirect(url_for("login"))
 
 
+# Eliminar un  trailer
+@app.route("/Prueba", methods=["POST"])
+def Prueba():
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    return_var = "cat"
+    if request.method == "POST":
+        if "idactualperfil" in session:
+            idaingresar = session["idactualperfil"]
+
+    return redirect(url_for(return_var))
+
+
 # Catalogo
 @app.route("/cat")
 def cat():
@@ -1070,8 +1612,14 @@ def search():
 
 # Agregar anunciante
 @app.route("/addanu")
-def add_anunciante():
+def addanu():
     return render_template("addAnu.html")
+
+
+# Eliminar anunciante
+@app.route("/deleteanu")
+def deleteanu():
+    return render_template("DeleteAnunciante.html")
 
 
 # Agregar director
@@ -1080,10 +1628,22 @@ def add_director():
     return render_template("addDir.html")
 
 
+# Eliminar director
+@app.route("/deletedir")
+def deletedir():
+    return render_template("DeleteDirector.html")
+
+
 # Agregar anuncio
 @app.route("/addad")
 def add_advertisment():
     return render_template("addAd.html")
+
+
+# Delete anuncio
+@app.route("/deletead")
+def deletead():
+    return render_template("DeleteAnuncio.html")
 
 
 # Agregar actor
@@ -1092,10 +1652,69 @@ def add_actor():
     return render_template("addAct.html")
 
 
+@app.route("/deleteactor")
+def deleteactor():
+    return render_template("DeleteActor.html")
+
+
 # Agregar trailer
 @app.route("/addtrailer")
-def add_trailer():
+def addtrailer():
     return render_template("addTrailer.html")
+
+
+# Eliminar trailer
+@app.route("/deletecontent")
+def deletecontent():
+    return render_template("DeleteContent.html")
+
+
+# Manejar contenido
+@app.route("/manCon")
+def manCon():
+    return render_template("manejarContenido.html")
+
+
+# Eliminar user
+@app.route("/deleteuser")
+def deleteuser():
+    return render_template("DeleteUsuario.html")
+
+
+# Modificar Actor
+@app.route("/modact")
+def modact():
+    return render_template("modifyAct.html")
+
+
+# Modificar Director
+@app.route("/moddirector")
+def moddirector():
+    return render_template("modifyDirector.html")
+
+
+# Modificar trailer
+@app.route("/modtrailer")
+def modtrailer():
+    return render_template("modifyTrailer.html")
+
+
+# Modificar contenido
+@app.route("/modC")
+def modC():
+    return render_template("modificarContenido.html")
+
+
+# Modificar anuncio
+@app.route("/modanuncio")
+def modanuncio():
+    return render_template("modifyAnuncio.html")
+
+
+# Modificar anuncio
+@app.route("/modanunciante")
+def modanunciante():
+    return render_template("modificarAnunciante.html")
 
 
 # Referencia: https://codeforgeek.com/render-html-file-in-flask/

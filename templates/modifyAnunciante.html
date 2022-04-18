@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/addanu.css') }}">
+    <title>Modificar anunciante</title>
+</head>
+
+<body>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for message in messages %}
+    <div class="box-message">
+        <p> {{ message }} </p>
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    <section class="container">
+
+        <h1 class="title">Ingrese la información del Anunciante que desea modificar</h1>
+
+        <hr>
+
+        <form class="form" action="/modAnunciante" method="POST" required autocomplete="off">
+            <input type="number" placeholder="Nombre" name="name" id="name" method="GET" required>
+            <input type="number" placeholder="ID" name="id" id="id" method="GET">
+
+            <section class=" clearfix">
+                <button type="submit" class="add-act-btn" value="submit"> <a id="Add-Act">Modificar</a>
+                </button>
+            </section>
+        </form>
+    </section>
+</body>
+
+</html>

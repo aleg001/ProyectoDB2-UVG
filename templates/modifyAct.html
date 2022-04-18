@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/addact.css') }}">
+    <title>Document</title>
+</head>
+
+
+<body>
+
+    {% with messages=get_flashed_messages() %}
+    {% if messages %}
+    {% for message in messages %}
+    <div class="box-message">
+        <p class="MensajesFlash"> {{ message }} </p>
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    <section class="container">
+
+        <p class="title">Ingrese la información del Actor que desea modificar</p>
+
+        <hr>
+
+        <form class="form" action="/modActor" method="POST" autocomplete="off">
+            <input type="text" placeholder="Nombre" name="name" id="name" method="GET" required>
+            <input type="text" placeholder="Apellido" name="lastname" id="lastname" method="GET" required>
+            <input type="number" placeholder="DPI" name="dpi" id="dpi" method="GET" required>
+
+            <section class=" clearfix">
+                <button type="submit" class="add-act-btn" value="submit"> <a id="Add-Act">Modificar</a>
+                </button>
+            </section>
+        </form>
+    </section>
+</body>
+
+</html>

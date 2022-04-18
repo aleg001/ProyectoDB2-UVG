@@ -7,16 +7,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/addact.css') }}">
     <title>Document</title>
-</head {% with messages=get_flashed_messages() %} {% if messages %} {% for message in messages %} <div
-    class="box-message">
-<p class="MensajesFlash"> {{ message }} </p>
-</div>
-{% endfor %}
-{% endif %}
-{% endwith %}
+</head>
 
 
 <body>
+
+    {% with messages=get_flashed_messages() %}
+    {% if messages %}
+    {% for message in messages %}
+    <div class="box-message">
+        <p class="MensajesFlash"> {{ message }} </p>
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+
     <section class="container">
 
         <h1 class="title">Información de Actor</h1>
