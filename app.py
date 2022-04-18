@@ -22,6 +22,8 @@ import string
 import time
 from datetime import datetime
 
+from pyrsistent import v
+
 """
 Referencia para Flask + React:
 https://towardsdatascience.com/build-deploy-a-react-flask-app-47a89a5d17d9
@@ -148,6 +150,45 @@ def FechaActual():
     return stringUnificado
 
 
+# Impresion de Queries
+
+
+def ImpresionActores(primerAct):
+    primerAct = primerAct.replace("[", "")
+    primerAct = primerAct.replace("]", "")
+    primerAct = primerAct.replace("(", "")
+    primerAct = primerAct.replace(")", "")
+    primerAct = primerAct.replace(",", "")
+    primerAct = "Actor y cantidad películas:", primerAct
+    flash(primerAct)
+    return primerAct
+
+
+def ImpresionGenero(genero):
+    genero = genero.replace("[", "")
+    genero = genero.replace("]", "")
+    genero = genero.replace("(", "")
+    genero = genero.replace(")", "")
+    genero = genero.replace(",", "")
+    genero = "Genero y tiempo:", genero
+    flash(genero)
+    return genero
+
+
+# Cant_Reproducciones, Categoria y tipo Cuenta
+
+
+def ImpresionRepro(repro):
+    repro = repro.replace("[", "")
+    repro = repro.replace("]", "")
+    repro = repro.replace("(", "")
+    repro = repro.replace(")", "")
+    repro = repro.replace(",", "")
+    repro = "Reproducciones, categoria y tipo de cuenta:", repro
+    flash(repro)
+    return repro
+
+
 # Variable global
 contadorIntentosFallidos = 0
 
@@ -157,6 +198,7 @@ def horasPico():
     return render_template("horasPicos.html")
 
 
+# estadisticas
 @app.route("/estadisticaHorasPico", methods=["POST"])
 def estadisticaHorasPico():
 
@@ -221,19 +263,208 @@ def cantRepro():
         Repros = cur.fetchall()
         strTemp = ""
         strFinal = ""
-        """"
-        for i in Repros:
-            strTemp = str(Repros[i])
-            strFinal = strTemp.replace("[", "")
-            strFinal = strTemp.replace("]", "")
-            strFinal = strTemp.replace("(", " ")
-            strFinal = strTemp.replace(")", "")"""
+        # Cant_Reproducciones, Categoria y tipo Cuenta
+        primerAct = str(Repros[0])
+        segundoAct = str(Repros[1])
+        tercerAct = str(Repros[2])
+        cuartoAct = str(Repros[3])
+        QuintoAct = str(Repros[4])
+        SextoAct = str(Repros[5])
 
-        flash(Repros)
+        ImpresionRepro(primerAct)
+        ImpresionRepro(segundoAct)
+        ImpresionRepro(tercerAct)
+        ImpresionRepro(cuartoAct)
+        ImpresionRepro(QuintoAct)
+        ImpresionRepro(SextoAct)
+
+        # flash(Repros)
         conn.commit()
         cur.close()
         # cantidadrepro = cur.fetchall()
     return render_template("cantidadRepro.html")
+
+
+@app.route("/actoresDir", methods=["POST"])
+def actoresDir():
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    if request.method == "POST":
+        cur.execute(
+            """
+        SELECT a.nombre , COUNT(t.actorprincipal) AS aparicion_actor 
+        FROM trailer t 
+        LEFT JOIN actor a ON t.actorprincipal = a.id_actor 
+        WHERE t.id_trailer IN(
+            SELECT r.id_vid 
+            FROM reproduccion r
+            LEFT JOIN perfil p ON r.id_per = p.id_perfil 
+            LEFT JOIN suscripcion s ON p.id_usuario = s.id_user 
+            WHERE s.tipo LIKE 'Premium' OR s.tipo LIKE 'Basic'
+        )
+        GROUP BY a.nombre
+        ORDER BY aparicion_actor DESC 
+        LIMIT 10;         
+        """.format()
+        )
+        actoresdirectores = cur.fetchall()
+
+        # [[datetime.time(21, 0)], [datetime.time(20, 0)], [datetime.time(16, 0)]]
+        primerAct = str(actoresdirectores[0])
+        segundoAct = str(actoresdirectores[1])
+        tercerAct = str(actoresdirectores[2])
+        cuartoAct = str(actoresdirectores[3])
+        QuintoAct = str(actoresdirectores[4])
+        SextoAct = str(actoresdirectores[5])
+        SepAct = str(actoresdirectores[6])
+        OctAct = str(actoresdirectores[7])
+        NovAct = str(actoresdirectores[8])
+        DecAct = str(actoresdirectores[9])
+
+        ImpresionActores(primerAct)
+        ImpresionActores(segundoAct)
+        ImpresionActores(tercerAct)
+        ImpresionActores(cuartoAct)
+        ImpresionActores(QuintoAct)
+        ImpresionActores(SextoAct)
+        ImpresionActores(SepAct)
+        ImpresionActores(OctAct)
+        ImpresionActores(NovAct)
+        ImpresionActores(DecAct)
+
+        # flash(primerAct)
+
+        conn.commit()
+        cur.close()
+    return render_template("top10Act.html")
+
+
+@app.route("/actoresDir2", methods=["POST"])
+def actoresDir2():
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    if request.method == "POST":
+        cur.execute(
+            """
+        select d.nombre, count(t.director_t) as director_apa 
+        from trailer t 
+        left join director d on t.director_t = d.id_director 
+        where t.id_trailer in(
+            select r.id_vid 
+            from reproduccion r
+            left join perfil p on r.id_per = p.id_perfil 
+            left join suscripcion s on p.id_usuario = s.id_user 
+            where s.tipo like 'Premium' or s.tipo like 'Basic'
+        )
+        group by d.nombre 
+        order by director_apa desc 
+        limit 10;         
+        """.format()
+        )
+        actoresdirectores = cur.fetchall()
+        flash(actoresdirectores)
+        conn.commit()
+        cur.close()
+    return render_template("top10Act.html")
+
+
+@app.route("/cuentasAvanzadas", methods=["POST"])
+def cuentasAvanzadas():
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    if request.method == "POST":
+        cur.execute(
+            """ 
+        SELECT COUNT(*) 
+        FROM suscripcion s 
+        LEFT JOIN usuario u ON u.id = s.id_user
+        WHERE s.tipo LIKE 'Premium'
+        AND u.fechainscripcion BETWEEN (current_date - interval '6 months') AND current_date;        
+        """.format()
+        )
+        cAvanzadas = cur.fetchall()
+
+        conn.commit()
+        primerAct = str(cAvanzadas[0])
+        primerAct = primerAct.replace("[", "Cuentas: ")
+        primerAct = primerAct.replace("]", "")
+        flash(primerAct)
+
+        cur.close()
+
+    return render_template("cantAvanzadas.html")
+
+
+@app.route("/estadisticaGenero", methods=["POST"])
+def estadisticaGenero():
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    if request.method == "POST":
+
+        date1 = request.form["dateI"]
+        date2 = request.form["dateF"]
+
+        cur.execute(
+            """ 
+            SELECT g.nombregen , SUM(t.tiempo_rep) AS tiempo_reproduccion
+            FROM reproduccion r
+            LEFT JOIN trailer t ON r.id_vid = t.id_trailer
+            LEFT JOIN genero g ON t.genero_t = g.id_genero 
+            WHERE r.fecha_rep BETWEEN (SELECT TO_DATE('{0}', 'YYYY-MM-DD')) AND (SELECT TO_DATE('{1}', 'YYYY-MM-DD'))
+            GROUP BY g.nombregen 
+            ORDER BY tiempo_reproduccion DESC 
+            LIMIT 10;       
+            """.format(
+                date1, date2
+            )
+        )
+        estGen = cur.fetchall()
+        primerAct = str(estGen[0])
+        segundoAct = str(estGen[1])
+        tercerAct = str(estGen[2])
+        cuartoAct = str(estGen[3])
+        QuintoAct = str(estGen[4])
+        SextoAct = str(estGen[5])
+        SepAct = str(estGen[6])
+        OctAct = str(estGen[7])
+        NovAct = str(estGen[8])
+        DecAct = str(estGen[9])
+
+        ImpresionActores(primerAct)
+        ImpresionActores(segundoAct)
+        ImpresionActores(tercerAct)
+        ImpresionActores(cuartoAct)
+        ImpresionActores(QuintoAct)
+        ImpresionActores(SextoAct)
+        ImpresionActores(SepAct)
+        ImpresionActores(OctAct)
+        ImpresionActores(NovAct)
+        ImpresionActores(DecAct)
+
+        conn.commit()
+        cur.close()
+    return render_template("top10Generos.html")
+
+
+@app.route("/top10")
+def top10():
+    return render_template("top10Generos.html")
+
+
+@app.route("/cantRep")
+def cantRep():
+    return render_template("cantidadRepro.html")
+
+
+@app.route("/reportes")
+def reportes():
+    return render_template("reportesAdmin.html")
+
+
+@app.route("/cuentasAvan")
+def cuentasAvan():
+    return render_template("cantAvanzadas.html")
+
+
+@app.route("/top10Actores")
+def top10Actores():
+    return render_template("top10Act.html")
 
 
 @app.route("/agregarUser", methods=["POST"])
@@ -311,9 +542,85 @@ def logout():
 
 
 # Login de admin
+@app.route("/adminLog", methods=["POST"])
+def adminLog():
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+    if request.method == "POST":
+
+        email = request.form["username"]
+        # Sanitazacion de inputs
+        email = email.replace("'", "")
+        email = email.replace("--", "")
+
+        password = request.form["psw"]
+        # Sanitazacion de inputs
+        password = password.replace("'", "")
+        password = password.replace("--", "")
+        # print(password)
+        passHash = generate_password_hash(password, method="sha256")
+        # print(email)
+        # print(passHash)
+        intentoFallido = IDIntentoFallido()
+        intentoFecha = FechaActual()
+
+        # print(intentoFallido)
+        # print(intentoFecha)
+
+        cur.execute(
+            """
+            SELECT * FROM usuario WHERE correo LIKE '{0}' and isadmin like "True"
+            """.format(
+                email
+            )
+        )
+
+        CorreoExistente = cur.fetchone()
+
+        if CorreoExistente:
+            contraHash = CorreoExistente["contrasena"]
+            verificarPass = check_password_hash(contraHash, password)
+            if verificarPass:
+                flash("Creedenciales VALIDOS")
+                return redirect(url_for("menuAdmin"))
+            else:
+                contadorIntentosFallidos = contadorIntentosFallidos + 1
+                # print("CONTADOR 1: ", contadorIntentosFallidos)
+                cur.execute(
+                    """ 
+                INSERT INTO intentosFallidos VALUES ('{0}', '{1}', '{2}');
+                """.format(
+                        intentoFallido, email, intentoFecha
+                    )
+                )
+                flash("Contraseña equivocada")
+                return redirect(url_for("login"))
+        else:
+            contadorIntentosFallidos = contadorIntentosFallidos + 1
+            # print("CONTADOR 2: ", contadorIntentosFallidos)
+
+            cur.execute(
+                """ 
+                INSERT INTO intentosFallidos VALUES ('{0}', '{1}', '{2}');
+            """.format(
+                    intentoFallido, email, intentoFecha
+                )
+            )
+            flash("Correo invalido")
+            return redirect(url_for("login"))
+
+    conn.commit()
+    cur.close()
+    flash("Credenciales invalidos 3")
+    # contadorIntentosFallidos = contadorIntentosFallidos + 1
+    # print("CONTADOR FINAL: ", contadorIntentosFallidos)
+    return redirect(url_for("login"))
+
+
+# Login de admin
 @app.route("/loginAdmin")
-def loginAcmon():
-    print("xd")
+def loginAdmin():
+    return render_template("loginAdmin.html")
 
 
 # Logout de admin
@@ -789,31 +1096,6 @@ def add_actor():
 @app.route("/addtrailer")
 def add_trailer():
     return render_template("addTrailer.html")
-
-
-@app.route("/top10")
-def top10():
-    return render_template("top10Generos.html")
-
-
-@app.route("/cantRep")
-def cantRep():
-    return render_template("cantidadRepro.html")
-
-
-@app.route("/estadisticaGenero", methods=["POST"])
-def estadisticaGenero():
-    print("XD")
-
-
-@app.route("/estadisticaCantidad", methods=["POST"])
-def estadisticaCantidad():
-    print("XD")
-
-
-@app.route("/reportes", methods=["GET", "POST"])
-def reportes():
-    return render_template("reportesAdmin.html")
 
 
 # Referencia: https://codeforgeek.com/render-html-file-in-flask/

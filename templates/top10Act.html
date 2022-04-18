@@ -6,26 +6,33 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/horasPico.css') }}">
-    <title>Top 10 de generos mas vistos</title>
+    <title>Top 10 actores y directores</title>
 </head>
-
 
 <body>
     <section class="container">
 
-        <h1 class="title">Top 10 géneros más vistos</h1>
+        <h1 class="title">Top 10 actores y directores</h1>
 
         <hr>
 
-        <form class="form" action="/estadisticaGenero" method="POST" autocomplete="off">
-            <input type="date" placeholder="Fecha inicio" name="dateI" id="dateI" method="GET" required>
-            <input type="date" placeholder="Fecha fin" name="dateF" id="dateF" method="GET" required>
+        <form class="form" action="/actoresDir" method="POST" autocomplete="off">
 
             <section class=" clearfix">
-                <button type="submit" class="add-act-btn" value="submit"> <a id="Add-Act">Consultar</a>
+                <button type="submit" class="add-act-btn" value="submit"> <a id="Add-Act">Consultar actores</a>
                 </button>
             </section>
         </form>
+
+        <form class="form" action="/actoresDir2" method="POST" autocomplete="off">
+
+            <section class=" clearfix">
+                <button type="submit" class="add-act-btn" value="submit"> <a id="Add-Act">Consultar directores</a>
+                </button>
+            </section>
+        </form>
+
+
     </section>
 
     <section>

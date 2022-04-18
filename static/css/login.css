@@ -115,6 +115,24 @@ button:hover {
   background-color: #004ecbc8;
 }
 
+.loginbtn2 {
+  float: left;
+  margin-top: 15%;
+  margin-left: -48%;
+  position: absolute;
+  width: 27%;
+  border-radius: 20px;
+
+  color: white;
+  text-decoration: none;
+  font-size: 18px;
+  letter-spacing: 1.5px;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background-color: #cb7d00c8;
+}
+
 .MensajesFlash {
   padding: 15px;
   margin-top: 13%;

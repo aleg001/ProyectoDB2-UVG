@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/horasPico.css') }}">
+    <title>Cantidad de cuentas avanzadas</title>
+</head {% with messages=get_flashed_messages() %} {% if messages %} {% for message in messages %} <div
+    class="box-message">
+<p class="MensajesFlash"> {{ message }} </p>
+{% endfor %}
+{% endif %}
+{% endwith %}
+
+
+<body>
+    <section class="container">
+
+        <h1 class="title">Cantidad de cuentas avanzadas - 6 meses</h1>
+
+        <hr>
+
+        <form class="form" action="/cuentasAvanzadas" method="POST" autocomplete="off">
+
+            <section class=" clearfix">
+                <button type="submit" class="add-act-btn" value="submit"> <a id="Add-Act">Consultar</a>
+                </button>
+            </section>
+        </form>
+
+
+    </section>
+</body>
+
+</html>
