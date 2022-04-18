@@ -569,7 +569,7 @@ def adminLog():
 
         cur.execute(
             """
-            SELECT * FROM usuario WHERE correo LIKE '{0}' and isadmin like "True"
+            SELECT * FROM usuario WHERE correo LIKE '{0}' and isadmin like 'True'
             """.format(
                 email
             )
@@ -584,7 +584,7 @@ def adminLog():
                 flash("Creedenciales VALIDOS")
                 return redirect(url_for("menuAdmin"))
             else:
-                contadorIntentosFallidos = contadorIntentosFallidos + 1
+                # contadorIntentosFallidos = contadorIntentosFallidos + 1
                 # print("CONTADOR 1: ", contadorIntentosFallidos)
                 cur.execute(
                     """ 
@@ -594,9 +594,9 @@ def adminLog():
                     )
                 )
                 flash("Contraseña equivocada")
-                return redirect(url_for("login"))
+                return redirect(url_for("loginAdmin"))
         else:
-            contadorIntentosFallidos = contadorIntentosFallidos + 1
+            # contadorIntentosFallidos = contadorIntentosFallidos + 1
             # print("CONTADOR 2: ", contadorIntentosFallidos)
 
             cur.execute(
@@ -607,14 +607,14 @@ def adminLog():
                 )
             )
             flash("Correo invalido")
-            return redirect(url_for("login"))
+            return redirect(url_for("loginAdmin"))
 
     conn.commit()
     cur.close()
     flash("Credenciales invalidos 3")
     # contadorIntentosFallidos = contadorIntentosFallidos + 1
     # print("CONTADOR FINAL: ", contadorIntentosFallidos)
-    return redirect(url_for("login"))
+    return redirect(url_for("loginAdmin"))
 
 
 # Login de admin
