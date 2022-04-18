@@ -152,3 +152,14 @@ select[id="isAdmin"] {
   right: 500px;
   bottom: 370px;
 }
+
+label[id="tipoCuenta"] {
+  position: absolute;
+  right: 600px;
+  bottom: 500px;
+}
+select[id="tipoCuenta"] {
+  position: absolute;
+  right: 500px;
+  bottom: 500px;
+}

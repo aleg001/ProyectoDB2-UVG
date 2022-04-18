@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/reportesAdmin.css') }}">
+    <title>Configuracion</title>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>Configuracion</h1>
+        <hr>
+
+        <div class=" clearfix">
+            <button type="submit" class="signupbtn" method="GET"> <a id="signup" href="tipoCuenta">Cambiar tipo de
+                    cuenta</a>
+            </button>
+        </div>
+        <div class=" clearfix">
+            <button type="submit" class="signupbtn" method="GET"> <a id="signup" href="tablaPerfil">Manejar perfiles</a>
+            </button>
+        </div>
+
+
+        <div class=" clearfix">
+            <button type="submit" class="signupbtn" method="GET"> <a id="signup" href="logout">Logout
+                </a> </button>
+        </div>
+
+
+    </div>
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for message in messages %}
+    <div class="box-message">
+        <p class="MensajesFlash"> {{ message }} </p>
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+
+</body>
+
+</html>

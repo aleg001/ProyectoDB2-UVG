@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/busquedas.css') }}">
+    <title>Manejo perfil</title>
+</head>
+
+<body>
+
+    <p class="title">Manejo perfiles</p>
+
+    <hr>
+
+    <table id="tablaperfil">
+        <thead>
+            <tr>
+                <td>ID Perfil</td>
+                <td>Nombre</td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in lista %}
+            <tr>
+                <td>{{row[0]}}</td>
+                <td>{{row[1]}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+
+    <section class="inputs-man">
+        <form class="form" action="/manPer" method="POST" autocomplete="off">
+            <section class="inputs-fav1">
+                <input type="text" placeholder="Nombre" name="nombrePerfil" id="nombrePerfil" method="GET">
+                <section class=" clearfix">
+                    <button type="submit" class="add-tr-btn" value="submit"> <a id="Add-Tr">Agregar</a>
+                    </button>
+                </section>
+            </section>
+        </form>
+        <form class="form" action="/manDel" method="POST" autocomplete="off">
+            <section class="inputs-fav2">
+                <input type="text" placeholder="ID" name="idDel" id="idDel" method="GET">
+                <section class=" clearfix">
+                    <button type="submit" class="add-tr-btn" value="submit"> <a id="Add-Tr">Eliminar</a>
+                    </button>
+                </section>
+            </section>
+        </form>
+    </section>
+
+
+</body>
+
+</html>

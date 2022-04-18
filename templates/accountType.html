@@ -1,50 +1,48 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Creacion de cuenta</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/accountType.css') }}">
-
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/reportesAdmin.css') }}">
+    <title>Tipo de cuenta</title>
 </head>
 
 <body>
 
-
-
     <div class="container">
-
-        <h1 class="accountType">Tipo de cuenta
-        </h1>
-
+        <h1>Tipo de cuenta</h1>
         <hr>
 
-        <form action="/tipoCuenta" method="POST" autocomplete="off">
 
-            <label id="isAdmin" for="isAdmin" method="GET">Elige tu tipo de cuenta</label>
-            <select id="isAdmin" name="isAdmin" method="GET">
-                <option value="Free">Gratis</option>
-                <option value="Basic">Básica</option>
-                <option value="Premium">Premium</option>
+        <form action="/tipoCuenta1" method="POST" autocomplete="off">
+
+            <label class="tipoCuenta" id="tipoCuenta" for="tipoCuenta" method="GET">Elige tu tipo de cuenta</label>
+            <select class="selectXD" id="tipoCuenta" name="tipoCuenta" method="GET">
+                <option value="free">Gratis</option>
+                <option value="basic">Básica</option>
+                <option value="premium">Premium</option>
             </select>
 
-            <h3>
-                Cuenta básica (gratis, 1 perfil),
-                estándar (pagada, máximo de 4 perfiles) y avanzada (pagada, máximo de 8 perfiles).
-            </h3>
-
-
+            <br>
             <div class=" clearfix">
-                <button type="submit" class="signupbtn" value="submit"> <a id="crearCuenta">Guardar cambios</a>
-                </button>
+                <button type="submit" class="signupbtn" method="GET"> <a id="signup" href="cat">Enviar
+                    </a> </button>
             </div>
-        </form>
     </div>
 
-</body>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for message in messages %}
+    <div class="box-message">
+        <p class="MensajesFlash"> {{ message }} </p>
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
 
+
+</body>
 
 </html>

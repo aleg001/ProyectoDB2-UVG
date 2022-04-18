@@ -102,3 +102,76 @@ hr {
   border-radius: 40px;
   color: white;
 }
+
+.inputs-fav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.inputs-fav2 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  margin-top: 200px;
+}
+
+.inputs-fav1 {
+  margin-top: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+table,
+th,
+td {
+  border: 3px solid white;
+  border-collapse: collapse;
+}
+
+table {
+  width: 60vw;
+  position: absolute;
+  top: 600px;
+  border-collapse: collapse;
+}
+
+td {
+  text-shadow: 2px 2px 5px #011f26;
+  color: white;
+  padding: 5px;
+  border-collapse: collapse;
+}
+
+tr {
+  background: linear-gradient(90deg, #00d2ff 0%, #3a47d5 100%);
+  text-shadow: 2px 2px 5px #011f26;
+  color: white;
+  padding: 5px;
+  font-weight: bold;
+}
+
+th {
+  background: linear-gradient(90deg, #00d2ff 0%, #3a47d5 100%);
+  text-shadow: 2px 2px 5px #011f26;
+  color: white;
+  padding: 5px;
+}
+
+.inputs-man {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+}
+
+#tablaperfil {
+  width: 60vw;
+  position: absolute;
+  top: 380px;
+  border-collapse: collapse;
+}

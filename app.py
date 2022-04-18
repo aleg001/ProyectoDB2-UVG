@@ -164,6 +164,17 @@ def ImpresionActores(primerAct):
     return primerAct
 
 
+def ImpresionDic(primerAct):
+    primerAct = primerAct.replace("[", "")
+    primerAct = primerAct.replace("]", "")
+    primerAct = primerAct.replace("(", "")
+    primerAct = primerAct.replace(")", "")
+    primerAct = primerAct.replace(",", "")
+    primerAct = "Director y cantidad películas:", primerAct
+    flash(primerAct)
+    return primerAct
+
+
 def ImpresionGenero(genero):
     genero = genero.replace("[", "")
     genero = genero.replace("]", "")
@@ -299,7 +310,7 @@ def actoresDir():
             FROM reproduccion r
             LEFT JOIN perfil p ON r.id_per = p.id_perfil 
             LEFT JOIN suscripcion s ON p.id_usuario = s.id_user 
-            WHERE s.tipo LIKE 'Premium' OR s.tipo LIKE 'Basic'
+            WHERE s.tipo LIKE 'premium' OR s.tipo LIKE 'basic'
         )
         GROUP BY a.nombre
         ORDER BY aparicion_actor DESC 
@@ -352,7 +363,7 @@ def actoresDir2():
             from reproduccion r
             left join perfil p on r.id_per = p.id_perfil 
             left join suscripcion s on p.id_usuario = s.id_user 
-            where s.tipo like 'Premium' or s.tipo like 'Basic'
+            where s.tipo like 'premium' or s.tipo like 'basic'
         )
         group by d.nombre 
         order by director_apa desc 
@@ -371,16 +382,16 @@ def actoresDir2():
         NovAct = str(actoresdirectores[8])
         DecAct = str(actoresdirectores[9])
 
-        ImpresionActores(primerAct)
-        ImpresionActores(segundoAct)
-        ImpresionActores(tercerAct)
-        ImpresionActores(cuartoAct)
-        ImpresionActores(QuintoAct)
-        ImpresionActores(SextoAct)
-        ImpresionActores(SepAct)
-        ImpresionActores(OctAct)
-        ImpresionActores(NovAct)
-        ImpresionActores(DecAct)
+        ImpresionDic(primerAct)
+        ImpresionDic(segundoAct)
+        ImpresionDic(tercerAct)
+        ImpresionDic(cuartoAct)
+        ImpresionDic(QuintoAct)
+        ImpresionDic(SextoAct)
+        ImpresionDic(SepAct)
+        ImpresionDic(OctAct)
+        ImpresionDic(NovAct)
+        ImpresionDic(DecAct)
 
         conn.commit()
         cur.close()
@@ -396,7 +407,7 @@ def cuentasAvanzadas():
         SELECT COUNT(*) 
         FROM suscripcion s 
         LEFT JOIN usuario u ON u.id = s.id_user
-        WHERE s.tipo LIKE 'Premium'
+        WHERE s.tipo LIKE 'premium'
         AND u.fechainscripcion BETWEEN (current_date - interval '6 months') AND current_date;        
         """.format()
         )
@@ -526,6 +537,8 @@ def agregarUser():
         dpi = dpi.replace("--", "")
         isAdmin = request.form["isAdmin"]
 
+        tipo = request.form["tipoCuenta"]
+
         # Creacion de cuenta
         cur.execute(
             """
@@ -540,6 +553,14 @@ def agregarUser():
             INSERT INTO perfil VALUES ('{0}', '{1}', '{2}', '{3}');
             """.format(
                 RandomID, IDActual, username, isNotActive
+            )
+        )
+        # Creacion de primer perfil
+        cur.execute(
+            """
+            INSERT INTO suscripcion VALUES ('{0}', '{1}');
+            """.format(
+                IDActual, tipo
             )
         )
     # pruebas = cur.fetchall()
@@ -597,7 +618,8 @@ def index():
 # Logout
 @app.route("/logout")
 def logout():
-    print("xd")
+    session.pop("idactualperfil", None)
+    return redirect(url_for("login"))
 
 
 # Login de admin
@@ -702,22 +724,6 @@ def menuadmin():
 @app.route("/manAnu")
 def manAnu():
     return render_template("manejarAnuncios.html")
-
-
-# Perfil
-@app.route("/agregaPerfil", methods=["POST"])
-def profile(idPerfil):
-    print("xd")
-    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-    if request.method == "POST":
-        name = request.form[""]
-    return render_template("p-rofileSelector.html")
-
-
-# Perfil de admin
-@app.route("/adminProfile")
-def acmonProfile():
-    print("xd")
 
 
 # Agregar un nuevo director
@@ -1915,7 +1921,6 @@ def m10():
     return_var = "cat"
     if request.method == "GET":
         if "idactualperfil" in session:
-
             idreproduccion = IDIntentoFallido()
             fechareproducida = FechaActual()
             cur.execute(
@@ -1945,7 +1950,6 @@ def m11():
     return_var = "cat"
     if request.method == "GET":
         if "idactualperfil" in session:
-
             idreproduccion = IDIntentoFallido()
             fechareproducida = FechaActual()
             cur.execute(
@@ -2265,6 +2269,303 @@ def add_advertisment():
     return render_template("addAd.html")
 
 
+# Agregar anuncio
+@app.route("/tipoCuenta")
+def tipoCuenta():
+    return render_template("accountType.html")
+
+
+@app.route("/tipoCuenta1", methods=["GET", "POST"])
+def tipoCuenta1():
+    if request.method == "POST":
+        id = request.form["tipoCuenta"]
+
+        idaingresar = session["idactualperfil"]
+
+        idActual1 = str(idaingresar[0])
+        idActual1 = idActual1.replace("'", "")
+        idActual1 = idActual1.replace("[", "")
+        idActual1 = idActual1.replace("]", "")
+
+        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+        cur.execute(
+            """
+                UPDATE suscripcion
+                 SET tipo='{1}'
+                 WHERE id_user LIKE '{0}';
+            """.format(
+                idActual1, id
+            )
+        )
+        conn.commit()
+        cur.close()
+        return render_template("catalogue.html")
+
+
+# Agregar anuncio
+@app.route("/manejarPerfil")
+def manejarPerfil():
+    return render_template("accountType.html")
+
+
+@app.route("/tablaPerfil")
+def tablaPerfil():
+    idaingresar = session["idactualperfil"]
+    idActual1 = str(idaingresar[0])
+    idActual1 = idActual1.replace("'", "")
+    idActual1 = idActual1.replace("[", "")
+    idActual1 = idActual1.replace("]", "")
+    print(idActual1)
+
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    cur.execute(
+        """
+            select p.id_perfil, p.nombre 
+            from perfil p 
+            left join usuario u on p.id_usuario = u.id 
+            where p.id_usuario in (
+                select u2.id 
+                from perfil p2 
+                left join usuario u2 on p2.id_usuario = u2.id 
+                where p2.id_perfil like '{0}'
+            );
+            
+        """.format(
+            idActual1
+        )
+    )
+    PerfilesActuales = cur.fetchall()
+    return render_template("tablaPerfiles.html", lista=PerfilesActuales)
+
+
+@app.route("/manDel", methods=["GET", "POST"])
+def manDel():
+    if request.method == "POST":
+        idaingresar = request.form["idDel"]
+        idaingresar = idaingresar.replace("'", "")
+        idaingresar = idaingresar.replace("--", "")
+        print(idaingresar)
+        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+        cur.execute(
+            """ 
+            delete
+            from perfil p 
+            where p.id_perfil like '{0}'
+        """.format(
+                idaingresar
+            )
+        )
+
+        flash("Eliminado!")
+        conn.commit()
+        cur.close()
+    return render_template("catalogue.html")
+
+
+@app.route("/manPer", methods=["GET", "POST"])
+def manPer():
+    if request.method == "POST":
+
+        valorRandom = IDUsuario()
+        # id = request.form["idEliminar"]
+        # id = id.replace("'", "")
+        # id = id.replace("--", "")
+        perfil = request.form["nombrePerfil"]
+        perfil = perfil.replace("'", "")
+        perfil = perfil.replace("--", "")
+
+        idaingresar = session["idactualperfil"]
+        idActual1 = str(idaingresar[0])
+        idActual1 = idActual1.replace("'", "")
+        idActual1 = idActual1.replace("[", "")
+        idActual1 = idActual1.replace("]", "")
+
+        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+        cur.execute(
+            """
+            select s.tipo 
+            from suscripcion s 
+            left join perfil p on s.id_user = p.id_usuario
+            where p.id_perfil like '{0}' and s.tipo like 'free'
+        
+        """.format(
+                idActual1
+            )
+        )
+        free = cur.fetchall()
+
+        free = " ".join([" ".join([str(c) for c in lst]) for lst in free])
+
+        cur.execute(
+            """
+            select s.tipo 
+            from suscripcion s 
+            left join perfil p on s.id_user = p.id_usuario
+            where p.id_perfil like '{0}' and s.tipo like 'basic'
+        
+        """.format(
+                idActual1
+            )
+        )
+        basic = cur.fetchall()
+        basic = " ".join([" ".join([str(c) for c in lst]) for lst in basic])
+
+        cur.execute(
+            """
+            select s.tipo 
+            from suscripcion s 
+            left join perfil p on s.id_user = p.id_usuario
+            where p.id_perfil like '{0}' and s.tipo like 'premium'
+        
+        """.format(
+                idActual1
+            )
+        )
+        premium = cur.fetchall()
+        premium = " ".join([" ".join([str(c) for c in lst]) for lst in premium])
+        if free == "free":
+            flash("Cambia de tipo de cuenta para agregar perfiles!!")
+
+        if basic == "basic":
+            cur.execute(
+                """
+                select count(*) as cont
+                from perfil p 
+                left join usuario u on p.id_usuario = u.id 
+                where p.id_usuario in (
+                    select u2.id 
+                    from perfil p2 
+                    left join usuario u2 on p2.id_usuario = u2.id 
+                    where p2.id_perfil like '{0}'
+                ) having count(*) <= 3
+        
+            """.format(
+                    idActual1
+                )
+            )
+            basico = cur.fetchall()
+            if basico:
+                cur.execute(
+                    """
+                    select u2.id 
+                    from perfil p2 
+                    left join usuario u2 on p2.id_usuario = u2.id 
+                    where p2.id_perfil like '{0}'
+            
+                """.format(
+                        idActual1
+                    )
+                )
+                id_actualusuario = cur.fetchall()
+                id_actualusuario = str(id_actualusuario[0])
+                id_actualusuario = id_actualusuario.replace("'", "")
+                id_actualusuario = id_actualusuario.replace("[", "")
+                id_actualusuario = id_actualusuario.replace("]", "")
+                cur.execute(
+                    """
+                insert into perfil values('{0}', '{1}', '{2}', 'false');
+            
+                """.format(
+                        valorRandom, id_actualusuario, perfil
+                    )
+                )
+
+        if premium == "premium":
+            cur.execute(
+                """
+                select count(*) as cont
+                from perfil p 
+                left join usuario u on p.id_usuario = u.id 
+                where p.id_usuario in (
+                    select u2.id 
+                    from perfil p2 
+                    left join usuario u2 on p2.id_usuario = u2.id 
+                    where p2.id_perfil like '{0}'
+                ) having count(*) <= 7
+        
+            """.format(
+                    perfil
+                )
+            )
+            premio = cur.fetchall()
+            if premio:
+                cur.execute(
+                    """
+                    select u2.id 
+                    from perfil p2 
+                    left join usuario u2 on p2.id_usuario = u2.id 
+                    where p2.id_perfil like '{0}'
+            
+                """.format(
+                        idActual1
+                    )
+                )
+                id_actualusuario = cur.fetchall()
+                id_actualusuario = str(id_actualusuario[0])
+                id_actualusuario = id_actualusuario.replace("'", "")
+                id_actualusuario = id_actualusuario.replace("[", "")
+                id_actualusuario = id_actualusuario.replace("]", "")
+
+                cur.execute(
+                    """
+                insert into perfil values('{0}', '{1}', '{2}', 'false');
+            
+                """.format(
+                        valorRandom, id_actualusuario, perfil
+                    )
+                )
+
+        conn.commit()
+        cur.close()
+    return render_template("tablaPerfiles.html")
+
+
+@app.route("/favs", methods=["GET", "POST"])
+def favs():
+    if request.method == "POST":
+
+        id = request.form["idvid"]
+        print(id)
+        id = id.replace("'", "")
+        id = id.replace("--", "")
+        idaingresar = session["idactualperfil"]
+
+        idActual1 = str(idaingresar[0])
+        idActual1 = idActual1.replace("'", "")
+        idActual1 = idActual1.replace("[", "")
+        idActual1 = idActual1.replace("]", "")
+        idreproduccion = IDIntentoFallido()
+        fechareproducida = FechaActual()
+
+        # Jalar ID de perfil
+        if "idactualperfil" in session:
+            cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+            cur.execute(
+                """
+                    INSERT INTO favoritos VALUES('{0}','{1}');
+                """.format(
+                    idActual1, id
+                )
+            )
+            conn.commit()
+
+            cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+            cur.execute(
+                """
+                    INSERT INTO reproduccion VALUES ('{2}', '{3}', '{4}','{5}', '{6}');
+                """.format(
+                    idreproduccion, idActual1, id, "idad1", fechareproducida
+                )
+            )
+            conn.commit()
+            cur.close()
+
+        else:
+            print("no tengo id...")
+
+        return render_template("catalogue.html")
+
+
 # Delete anuncio
 @app.route("/deletead")
 def deletead():
@@ -2340,6 +2641,16 @@ def modanuncio():
 @app.route("/modanunciante")
 def modanunciante():
     return render_template("modifyAnunciante.html")
+
+
+@app.route("/configureishon")
+def configureishon():
+    return render_template("configuracion.html")
+
+
+@app.route("/config1")
+def config1():
+    return render_template("configuracion.html")
 
 
 # Referencia: https://codeforgeek.com/render-html-file-in-flask/

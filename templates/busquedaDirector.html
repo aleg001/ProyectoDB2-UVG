@@ -7,33 +7,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/busquedas.css') }}">
     <title>Busqueda director</title>
-    <style>
-        table,
-        th,
-        td {
-            border: 3px solid white;
-        }
-
-        table {
-            position: absolute;
-            top: 600px;
-            border-collapse: collapse;
-        }
-
-        td {
-            color: white;
-        }
-
-        tr {
-            background-color: blue;
-            color: white;
-        }
-
-        th {
-            background-color: blue;
-            color: white;
-        }
-    </style>
 
 </head>
 
@@ -43,34 +16,45 @@
 
     <hr>
 
-    <form class="form" action="/busD" method="POST" autocomplete="off">
+    <section class="inputs-fav">
+        <form class="form" action="/busD" method="POST" autocomplete="off">
+            <section class="inputs-fav1">
+                <input type="text" placeholder="Nombre" name="id" id="id" method="GET">
+                <section class=" clearfix">
+                    <button type="submit" class="add-tr-btn" value="submit"> <a id="Add-Tr">Buscar director</a>
+                    </button>
+                </section>
+            </section>
+        </form>
+        <form class="form" action="/favs" method="POST" autocomplete="off">
+            <section class="inputs-fav2">
+                <input type="text" placeholder="ID Trailer" name="idvid" id="idvid" method="GET">
+                <section class=" clearfix">
+                    <button type="submit" class="add-tr-btn" value="submit"> <a id="Add-Tr">Agregar a favoritos</a>
+                    </button>
+                </section>
+            </section>
+        </form>
+    </section>
 
-        <input type="text" placeholder="Director" name="id" id="id" method="GET">
-        <section class=" clearfix">
-            <button type="submit" class="add-tr-btn" value="submit"> <a id="Add-Tr">Buscar director</a>
-            </button>
-        </section>
+    <table id="directores">
+        <thead>
 
-        <table id="directores" style="width: 100%">
-            <thead>
-                <tr>
-                    <td>ID de Pelicula</td>
-                    <td>Titulo de Pelicula</td>
-                </tr>
-            </thead>
-            <tbody>
-                {% for row in lista %}
-                <tr>
-                    <td>{{row[0]}}</td>
-                    <td>{{row[1]}}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+            <td>ID de Pelicula</td>
+            <td>Titulo de Pelicula</td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in lista %}
 
-
-    </form>
+            <td>{{row[0]}}</td>
+            <td>{{row[1]}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
 </body>
+
 
 </html>

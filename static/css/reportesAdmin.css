@@ -54,25 +54,35 @@ button {
   width: 15vw;
   background: linear-gradient(90deg, #ffffff 0%, #ffffff 100%);
   padding: 10px;
-  margin: 5px;
   color: white;
   border: none;
   cursor: pointer;
   opacity: 0.9;
   font-size: 15px;
   border-radius: 50px;
-  margin-top: 30px;
-  box-shadow: 1px 1px 10px #262626;
-  margin-bottom: 10%;
+  margin-top: 10px;
   text-decoration-line: none;
+  margin-bottom: 20%;
 }
 
-button:hover {
-  opacity: 1;
+.btn1tn1 button:hover {
+  margin-bottom: 320px;
+}
+
+.tipoCuenta {
+  margin-top: 30px;
+  color: white;
+}
+
+.selectXD {
+  margin-top: 30px;
+  margin-bottom: 30px;
 }
 
 .title {
   font-size: 30px;
+  align-items: center;
+  justify-content: center;
   color: white;
   margin: 40px 25px 25px 25px;
 }
@@ -84,7 +94,7 @@ hr {
 
 h1 {
   margin-top: 10%;
-  margin-left: 25%;
+
   color: white;
   align-items: center;
   justify-content: center;
