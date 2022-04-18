@@ -262,10 +262,12 @@ def agregarUser():
         # Sanitacion de inputs
         username = username.replace("'", "")
         username = username.replace("--", "")
+
         password = request.form["pass"]
         password = password.replace("'", "")
         password = password.replace("--", "")
         passHash = generate_password_hash(password, method="sha256")
+
         dpi = request.form["DPI"]
         # Sanitacion de inputs
         dpi = dpi.replace("'", "")

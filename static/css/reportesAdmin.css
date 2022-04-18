@@ -4,6 +4,8 @@
   box-sizing: border-box;
   font-family: "Open Sans", sans-serif, white;
   text-decoration-line: none;
+  align-items: center;
+  justify-content: center;
 }
 
 body {
@@ -82,7 +84,10 @@ hr {
 
 h1 {
   margin-top: 10%;
+  margin-left: 25%;
   color: white;
+  align-items: center;
+  justify-content: center;
 }
 
 #Add-Act {
