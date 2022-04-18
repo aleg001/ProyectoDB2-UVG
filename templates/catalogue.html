@@ -8,10 +8,23 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/catalogue.css') }}">
     <!-- Link Swiper's CSS -->
     <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+    <script src="https://kit.fontawesome.com/e3c9e02f78.js" crossorigin="anonymous"></script>
     <title>Catalogo</title>
 </head>
 
 <body>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for message in messages %}
+    <div class="box-message">
+        <p> {{ message }} </p>
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    <a href="/menuTabla"><i class="fa-solid fa-magnifying-glass"></i></a>
+
     <section class="banner">
         <figure class="banner-fig">
             <img class="banner-img" src="/static/css/HHTVHHTV.jpeg" alt="">
@@ -23,37 +36,52 @@
         <section class="swiper mySwiper action">
             <h1 class="category-section">TRAILERS</h1>
             <ul class="swiper-wrapper action-cards">
-                <li class="swiper-slide card"><img src="https://m.media-amazon.com/images/I/71QEq--8H-L._AC_SY679_.jpg"
-                        alt=""></li>
-                <li class="swiper-slide card"><img src="https://img.ecartelera.com/noticias/fotos/62200/62242/1.jpg"
-                        alt=""></li>
-                <li class="swiper-slide card"><img
-                        src="https://www.cinemascomics.com/wp-content/uploads/2022/02/poster-morbius.jpg" alt=""></li>
-                <li class="swiper-slide card"><img
-                        src="https://m.media-amazon.com/images/M/MV5BZmRjODgyMzEtMzIxYS00OWY2LTk4YjUtMGMzZjMzMTZiN2Q0XkEyXkFqcGdeQXVyMTkxNjUyNQ@@._V1_.jpg"
-                        alt=""></li>
-                <li class="swiper-slide card"><img
-                        src="https://assets-prd.ignimgs.com/2022/01/13/uncharted-poster-full-1642086040683.jpg" alt="">
+                <li class="swiper-slide card"><a href="m1"><img
+                            src="https://es.web.img2.acsta.net/pictures/19/11/12/12/25/0815514.jpg" alt=""></a></li>
+                <li class="swiper-slide card"><a href="m2"><img
+                            src="https://sm.ign.com/ign_es/screenshot/default/fl0u5uixwaazev7_cphe.jpg" alt=""></a></li>
+                <li class="swiper-slide card"><a href="m3"><img
+                            src="https://pics.filmaffinity.com/tick_tick_Boom-363141996-large.jpg" alt=""></a></li>
+                <li class="swiper-slide card"><a href="m4"><img
+                            src="https://cdn11.bigcommerce.com/s-yzgoj/images/stencil/1280x1280/products/369184/4192566/api6nuaeb__93364.1625621715.jpg?c=2"
+                            alt=""></a></li>
+                <li class="swiper-slide card"><a href="m5"><img
+                            src="https://m.media-amazon.com/images/I/91rBVx3yOgL._AC_SY741_.jpg" alt="">
+                    </a></li>
+                <li class="swiper-slide card"><a href="m6"><img
+                            src="https://lumiere-a.akamaihd.net/v1/images/p_guardiansofthegalaxyvol2_19888_6cc63663.jpeg"
+                            alt=""></a></li>
+                <li class="swiper-slide card"><a href="m7"><img
+                            src="https://pics.filmaffinity.com/R_pidos_y_furiosos_7-802093255-large.jpg" alt="">
+                    </a></li>
+                <li class="swiper-slide card"><a href="m8"><img
+                            src="https://img.ecartelera.com/noticias/fotos/62200/62242/1.jpg" alt=""></a></li>
+                <li class="swiper-slide card"><a href="m9"><img
+                            src="https://m.media-amazon.com/images/I/71vZLSomIKL._AC_SY741_.jpg" alt=""></a>
                 </li>
-                <li class="swiper-slide card"><img
-                        src="https://m.media-amazon.com/images/M/MV5BYzZlYWIwMGMtYzgxYS00MTAyLWEzMjQtODIyZWM4ZTM5NzU3XkEyXkFqcGdeQXVyMzMwOTU5MDk@._V1_FMjpg_UX1000_.jpg"
-                        alt=""></li>
-                <li class="swiper-slide card"><img
-                        src="https://theactionelite.com/wp-content/uploads/2021/12/BE_Renegades_KA_r4v2.webp" alt="">
+                <li class="swiper-slide card"><a href="m10"><img
+                            src="https://i.pinimg.com/736x/30/c2/fb/30c2fbc581786f9761e44d6968e3a113.jpg" alt=""></a>
                 </li>
-                <li class="swiper-slide card"><img
-                        src="https://criticologos.com/wp-content/uploads/2022/01/Lockdown_KeyArt_3x4_2160x2880-768x1024.jpg"
-                        alt=""></li>
-                <li class="swiper-slide card"><img src="" alt=""></li>
-                <li class="swiper-slide card"><img src="" alt=""></li>
-                <li class="swiper-slide card"><img src="" alt=""></li>
-                <li class="swiper-slide card"><img src="" alt=""></li>
-                <li class="swiper-slide card"><img src="" alt=""></li>
-                <li class="swiper-slide card"><img src="" alt=""></li>
-                <li class="swiper-slide card"><img src="" alt=""></li>
-                <li class="swiper-slide card"><img src="" alt=""></li>
+                <li class="swiper-slide card"><a href="m11"><img
+                            src="https://www.larazanw.com/wp-content/uploads/2018/04/LR_20150206_ENT03_150209921_AR.jpg"
+                            alt=""></a></li>
+                <li class="swiper-slide card"><a href="m12"><img
+                            src="https://es.web.img3.acsta.net/pictures/15/02/26/15/46/366265.jpg" alt=""></a>
+                </li>
+                <li class="swiper-slide card"><a href="m13"><img
+                            src="https://pics.filmaffinity.com/Silicon_Valley_Serie_de_TV-787580757-large.jpg"
+                            alt=""></a></li>
+                <li class="swiper-slide card"><a href="m14"><img
+                            src="https://image.api.playstation.com/vulcan/ap/rnd/202106/1704/JzL1NLQvok7Pghe9W5PP2XNV.png"
+                            alt=""></a></li>
+                <li class="swiper-slide card"><a href="m15"><img
+                            src="https://scontent.fgua3-3.fna.fbcdn.net/v/t1.18169-9/12645201_988031054613915_3061703646013526834_n.jpg?_nc_cat=108&ccb=1-5&_nc_sid=174925&_nc_ohc=e-bMn2usqygAX8mE8tU&_nc_ht=scontent.fgua3-3.fna&oh=00_AT-GOQri2Pqeuj9AGTNPO83BAgFoi8H4np0ooifcVeUCIA&oe=628379E3"
+                            alt=""></a></li>
+                <li class="swiper-slide card"><a href="m16"><img
+                            src="https://es.web.img3.acsta.net/pictures/18/10/31/17/34/2348073.jpg" alt=""></a></li>
 
             </ul>
+
             <div class="swiper-button-next"></div>
             <div class="swiper-button-prev"></div>
             <div class="swiper-pagination"></div>

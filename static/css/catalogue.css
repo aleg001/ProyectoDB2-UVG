@@ -73,3 +73,19 @@ section .action-cards li {
 ::-webkit-scrollbar {
   display: none;
 }
+
+.box-message {
+  padding: 15px;
+  margin-bottom: 20px;
+  background-color: green;
+  border-radius: 40px;
+  color: white;
+}
+
+i {
+  position: absolute;
+  top: 40px;
+  right: 40px;
+  font-size: 20px;
+  color: white;
+}

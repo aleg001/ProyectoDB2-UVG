@@ -1035,6 +1035,52 @@ def agregarAnunciante():
     return redirect(url_for(return_var))
 
 
+# Modificar un anunciante
+@app.route("/modAnunciante", methods=["POST"])
+def modAnunciante():
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    return_var = "modanunciante"
+    if request.method == "POST":
+        name = request.form["name"]
+        # Sanitazacion de inputs
+        name = name.replace("'", "")
+        name = name.replace("--", "")
+
+        id = request.form["id"]
+        # Sanitazacion de inputs
+        id = id.replace("'", "")
+        id = id.replace("--", "")
+
+        cur.execute(
+            """
+            SELECT * FROM anunciante WHERE id_anunciante = '{0}';
+            """.format(
+                id
+            )
+        )
+        variable = cur.fetchone()
+
+        if variable:
+            # Modificacion de anunciante
+            cur.execute(
+                """
+                UPDATE anunciante
+                 SET id_anunciante='{0}',
+                    nombre='{1}'
+                 WHERE id_anunciante like '{0}';
+                """.format(
+                    id, name
+                )
+            )
+            return_var = "menuadmin"
+            conn.commit()
+        else:
+            flash("El anunciante no existe")
+        cur.close()
+
+    return redirect(url_for(return_var))
+
+
 # Eliminar un  anunciante
 @app.route("/eliminarAnunciante", methods=["POST"])
 def eliminarAnunciante():
@@ -1142,7 +1188,7 @@ def modAnuncio():
             """
             SELECT * FROM anuncio WHERE id_anuncio = '{0}';
             """.format(
-                id
+                anuncioID
             )
         )
         variable2 = cur.fetchone()
@@ -1587,15 +1633,594 @@ def verificarUser():
 
 
 # Eliminar un  trailer
-@app.route("/Prueba", methods=["POST"])
-def Prueba():
-    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-    return_var = "cat"
-    if request.method == "POST":
-        if "idactualperfil" in session:
-            idaingresar = session["idactualperfil"]
+@app.route("/m1", methods=["GET", "POST"])
+def m1():
 
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    idaingresar = session["idactualperfil"]
+    idActual1 = str(idaingresar[0])
+    idActual1 = idActual1.replace("'", "")
+    idActual1 = idActual1.replace("[", "")
+    idActual1 = idActual1.replace("]", "")
+    return_var = "cat"
+    if request.method == "GET":
+        if "idactualperfil" in session:
+
+            idreproduccion = IDIntentoFallido()
+            fechareproducida = FechaActual()
+            cur.execute(
+                """
+                INSERT INTO reproduccion VALUES ('{0}', '{1}', '{2}','{3}', '{4}');
+                """.format(
+                    idreproduccion, idActual1, "idtra1", "idad1", fechareproducida
+                )
+            )
+            conn.commit()
+            return_var = "cat"
+
+            flash("Reproducido con éxito!")
     return redirect(url_for(return_var))
+
+
+# Eliminar un  trailer
+@app.route("/m2", methods=["GET", "POST"])
+def m2():
+
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    idaingresar = session["idactualperfil"]
+    idActual1 = str(idaingresar[0])
+    idActual1 = idActual1.replace("'", "")
+    idActual1 = idActual1.replace("[", "")
+    idActual1 = idActual1.replace("]", "")
+    return_var = "cat"
+    if request.method == "GET":
+        if "idactualperfil" in session:
+
+            idreproduccion = IDIntentoFallido()
+            fechareproducida = FechaActual()
+            cur.execute(
+                """
+                INSERT INTO reproduccion VALUES ('{0}', '{1}', '{2}','{3}', '{4}');
+                """.format(
+                    idreproduccion, idActual1, "idtra2", "idad4", fechareproducida
+                )
+            )
+            conn.commit()
+            return_var = "cat"
+
+            flash("Reproducido con éxito!")
+    return redirect(url_for(return_var))
+
+
+# Eliminar un  trailer
+@app.route("/m3", methods=["GET", "POST"])
+def m3():
+
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    idaingresar = session["idactualperfil"]
+    idActual1 = str(idaingresar[0])
+    idActual1 = idActual1.replace("'", "")
+    idActual1 = idActual1.replace("[", "")
+    idActual1 = idActual1.replace("]", "")
+    return_var = "cat"
+    if request.method == "GET":
+        if "idactualperfil" in session:
+
+            idreproduccion = IDIntentoFallido()
+            fechareproducida = FechaActual()
+            cur.execute(
+                """
+                INSERT INTO reproduccion VALUES ('{0}', '{1}', '{2}','{3}', '{4}');
+                """.format(
+                    idreproduccion, idActual1, "idtra3", "idad3", fechareproducida
+                )
+            )
+            conn.commit()
+            return_var = "cat"
+
+            flash("Reproducido con éxito!")
+    return redirect(url_for(return_var))
+
+
+# Eliminar un  trailer
+@app.route("/m4", methods=["GET", "POST"])
+def m4():
+
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    idaingresar = session["idactualperfil"]
+    idActual1 = str(idaingresar[0])
+    idActual1 = idActual1.replace("'", "")
+    idActual1 = idActual1.replace("[", "")
+    idActual1 = idActual1.replace("]", "")
+    return_var = "cat"
+    if request.method == "GET":
+        if "idactualperfil" in session:
+
+            idreproduccion = IDIntentoFallido()
+            fechareproducida = FechaActual()
+            cur.execute(
+                """
+                INSERT INTO reproduccion VALUES ('{0}', '{1}', '{2}','{3}', '{4}');
+                """.format(
+                    idreproduccion, idActual1, "idtra4", "idad4", fechareproducida
+                )
+            )
+            conn.commit()
+            return_var = "cat"
+
+            flash("Reproducido con éxito!")
+    return redirect(url_for(return_var))
+
+
+# Eliminar un  trailer
+@app.route("/m5", methods=["GET", "POST"])
+def m5():
+
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    idaingresar = session["idactualperfil"]
+    idActual1 = str(idaingresar[0])
+    idActual1 = idActual1.replace("'", "")
+    idActual1 = idActual1.replace("[", "")
+    idActual1 = idActual1.replace("]", "")
+    return_var = "cat"
+    if request.method == "GET":
+        if "idactualperfil" in session:
+
+            idreproduccion = IDIntentoFallido()
+            fechareproducida = FechaActual()
+            cur.execute(
+                """
+                INSERT INTO reproduccion VALUES ('{0}', '{1}', '{2}','{3}', '{4}');
+                """.format(
+                    idreproduccion, idActual1, "idtra5", "idad5", fechareproducida
+                )
+            )
+            conn.commit()
+            return_var = "cat"
+
+            flash("Reproducido con éxito!")
+    return redirect(url_for(return_var))
+
+
+# Eliminar un  trailer
+@app.route("/m6", methods=["GET", "POST"])
+def m6():
+
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    idaingresar = session["idactualperfil"]
+    idActual1 = str(idaingresar[0])
+    idActual1 = idActual1.replace("'", "")
+    idActual1 = idActual1.replace("[", "")
+    idActual1 = idActual1.replace("]", "")
+    return_var = "cat"
+    if request.method == "GET":
+        if "idactualperfil" in session:
+
+            idreproduccion = IDIntentoFallido()
+            fechareproducida = FechaActual()
+            cur.execute(
+                """
+                INSERT INTO reproduccion VALUES ('{0}', '{1}', '{2}','{3}', '{4}');
+                """.format(
+                    idreproduccion, idActual1, "idtra6", "idad6", fechareproducida
+                )
+            )
+            conn.commit()
+            return_var = "cat"
+
+            flash("Reproducido con éxito!")
+    return redirect(url_for(return_var))
+
+
+# Eliminar un  trailer
+@app.route("/m7", methods=["GET", "POST"])
+def m7():
+
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    idaingresar = session["idactualperfil"]
+    idActual1 = str(idaingresar[0])
+    idActual1 = idActual1.replace("'", "")
+    idActual1 = idActual1.replace("[", "")
+    idActual1 = idActual1.replace("]", "")
+    return_var = "cat"
+    if request.method == "GET":
+        if "idactualperfil" in session:
+
+            idreproduccion = IDIntentoFallido()
+            fechareproducida = FechaActual()
+            cur.execute(
+                """
+                INSERT INTO reproduccion VALUES ('{0}', '{1}', '{2}','{3}', '{4}');
+                """.format(
+                    idreproduccion, idActual1, "idtra7", "idad7", fechareproducida
+                )
+            )
+            conn.commit()
+            return_var = "cat"
+
+            flash("Reproducido con éxito!")
+    return redirect(url_for(return_var))
+
+
+# Eliminar un  trailer
+@app.route("/m8", methods=["GET", "POST"])
+def m8():
+
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    idaingresar = session["idactualperfil"]
+    idActual1 = str(idaingresar[0])
+    idActual1 = idActual1.replace("'", "")
+    idActual1 = idActual1.replace("[", "")
+    idActual1 = idActual1.replace("]", "")
+    return_var = "cat"
+    if request.method == "GET":
+        if "idactualperfil" in session:
+
+            idreproduccion = IDIntentoFallido()
+            fechareproducida = FechaActual()
+            cur.execute(
+                """
+                INSERT INTO reproduccion VALUES ('{0}', '{1}', '{2}','{3}', '{4}');
+                """.format(
+                    idreproduccion, idActual1, "idtra8", "idad8", fechareproducida
+                )
+            )
+            conn.commit()
+            return_var = "cat"
+
+            flash("Reproducido con éxito!")
+    return redirect(url_for(return_var))
+
+
+# Eliminar un  trailer
+@app.route("/m9", methods=["GET", "POST"])
+def m9():
+
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    idaingresar = session["idactualperfil"]
+    idActual1 = str(idaingresar[0])
+    idActual1 = idActual1.replace("'", "")
+    idActual1 = idActual1.replace("[", "")
+    idActual1 = idActual1.replace("]", "")
+    return_var = "cat"
+    if request.method == "GET":
+        if "idactualperfil" in session:
+
+            idreproduccion = IDIntentoFallido()
+            fechareproducida = FechaActual()
+            cur.execute(
+                """
+                INSERT INTO reproduccion VALUES ('{0}', '{1}', '{2}','{3}', '{4}');
+                """.format(
+                    idreproduccion, idActual1, "idtra9", "idad9", fechareproducida
+                )
+            )
+            conn.commit()
+            return_var = "cat"
+
+            flash("Reproducido con éxito!")
+    return redirect(url_for(return_var))
+
+
+# Eliminar un  trailer
+@app.route("/m10", methods=["GET", "POST"])
+def m10():
+
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    idaingresar = session["idactualperfil"]
+    idActual1 = str(idaingresar[0])
+    idActual1 = idActual1.replace("'", "")
+    idActual1 = idActual1.replace("[", "")
+    idActual1 = idActual1.replace("]", "")
+    return_var = "cat"
+    if request.method == "GET":
+        if "idactualperfil" in session:
+
+            idreproduccion = IDIntentoFallido()
+            fechareproducida = FechaActual()
+            cur.execute(
+                """
+                INSERT INTO reproduccion VALUES ('{0}', '{1}', '{2}','{3}', '{4}');
+                """.format(
+                    idreproduccion, idActual1, "idtra10", "idad1", fechareproducida
+                )
+            )
+            conn.commit()
+            return_var = "cat"
+
+            flash("Reproducido con éxito!")
+    return redirect(url_for(return_var))
+
+
+# Eliminar un  trailer
+@app.route("/m11", methods=["GET", "POST"])
+def m11():
+
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    idaingresar = session["idactualperfil"]
+    idActual1 = str(idaingresar[0])
+    idActual1 = idActual1.replace("'", "")
+    idActual1 = idActual1.replace("[", "")
+    idActual1 = idActual1.replace("]", "")
+    return_var = "cat"
+    if request.method == "GET":
+        if "idactualperfil" in session:
+
+            idreproduccion = IDIntentoFallido()
+            fechareproducida = FechaActual()
+            cur.execute(
+                """
+                INSERT INTO reproduccion VALUES ('{0}', '{1}', '{2}','{3}', '{4}');
+                """.format(
+                    idreproduccion, idActual1, "idtra11", "idad1", fechareproducida
+                )
+            )
+            conn.commit()
+            return_var = "cat"
+
+            flash("Reproducido con éxito!")
+    return redirect(url_for(return_var))
+
+
+# Eliminar un  trailer
+@app.route("/m12", methods=["GET", "POST"])
+def m12():
+
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    idaingresar = session["idactualperfil"]
+    idActual1 = str(idaingresar[0])
+    idActual1 = idActual1.replace("'", "")
+    idActual1 = idActual1.replace("[", "")
+    idActual1 = idActual1.replace("]", "")
+    return_var = "cat"
+    if request.method == "GET":
+        if "idactualperfil" in session:
+
+            idreproduccion = IDIntentoFallido()
+            fechareproducida = FechaActual()
+            cur.execute(
+                """
+                INSERT INTO reproduccion VALUES ('{0}', '{1}', '{2}','{3}', '{4}');
+                """.format(
+                    idreproduccion, idActual1, "idtra12", "idad2", fechareproducida
+                )
+            )
+            conn.commit()
+            return_var = "cat"
+
+            flash("Reproducido con éxito!")
+    return redirect(url_for(return_var))
+
+
+# Eliminar un  trailer
+@app.route("/m13", methods=["GET", "POST"])
+def m13():
+
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    idaingresar = session["idactualperfil"]
+    idActual1 = str(idaingresar[0])
+    idActual1 = idActual1.replace("'", "")
+    idActual1 = idActual1.replace("[", "")
+    idActual1 = idActual1.replace("]", "")
+    return_var = "cat"
+    if request.method == "GET":
+        if "idactualperfil" in session:
+
+            idreproduccion = IDIntentoFallido()
+            fechareproducida = FechaActual()
+            cur.execute(
+                """
+                INSERT INTO reproduccion VALUES ('{0}', '{1}', '{2}','{3}', '{4}');
+                """.format(
+                    idreproduccion, idActual1, "idtra13", "idad3", fechareproducida
+                )
+            )
+            conn.commit()
+            return_var = "cat"
+
+            flash("Reproducido con éxito!")
+    return redirect(url_for(return_var))
+
+
+# Eliminar un  trailer
+@app.route("/m14", methods=["GET", "POST"])
+def m14():
+
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    idaingresar = session["idactualperfil"]
+    idActual1 = str(idaingresar[0])
+    idActual1 = idActual1.replace("'", "")
+    idActual1 = idActual1.replace("[", "")
+    idActual1 = idActual1.replace("]", "")
+    return_var = "cat"
+    if request.method == "GET":
+        if "idactualperfil" in session:
+
+            idreproduccion = IDIntentoFallido()
+            fechareproducida = FechaActual()
+            cur.execute(
+                """
+                INSERT INTO reproduccion VALUES ('{0}', '{1}', '{2}','{3}', '{4}');
+                """.format(
+                    idreproduccion, idActual1, "idtra14", "idad4", fechareproducida
+                )
+            )
+            conn.commit()
+            return_var = "cat"
+
+            flash("Reproducido con éxito!")
+    return redirect(url_for(return_var))
+
+
+# Eliminar un  trailer
+@app.route("/m15", methods=["GET", "POST"])
+def m15():
+
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    idaingresar = session["idactualperfil"]
+    idActual1 = str(idaingresar[0])
+    idActual1 = idActual1.replace("'", "")
+    idActual1 = idActual1.replace("[", "")
+    idActual1 = idActual1.replace("]", "")
+    return_var = "cat"
+    if request.method == "GET":
+        if "idactualperfil" in session:
+
+            idreproduccion = IDIntentoFallido()
+            fechareproducida = FechaActual()
+            cur.execute(
+                """
+                INSERT INTO reproduccion VALUES ('{0}', '{1}', '{2}','{3}', '{4}');
+                """.format(
+                    idreproduccion, idActual1, "idtra15", "idad5", fechareproducida
+                )
+            )
+            conn.commit()
+            return_var = "cat"
+
+            flash("Reproducido con éxito!")
+    return redirect(url_for(return_var))
+
+
+# Eliminar un  trailer
+@app.route("/m16", methods=["GET", "POST"])
+def m16():
+
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    idaingresar = session["idactualperfil"]
+    idActual1 = str(idaingresar[0])
+    idActual1 = idActual1.replace("'", "")
+    idActual1 = idActual1.replace("[", "")
+    idActual1 = idActual1.replace("]", "")
+    return_var = "cat"
+    if request.method == "GET":
+        if "idactualperfil" in session:
+
+            idreproduccion = IDIntentoFallido()
+            fechareproducida = FechaActual()
+            cur.execute(
+                """
+                INSERT INTO reproduccion VALUES ('{0}', '{1}', '{2}','{3}', '{4}');
+                """.format(
+                    idreproduccion, idActual1, "idtra16", "idad16", fechareproducida
+                )
+            )
+            conn.commit()
+            return_var = "cat"
+
+            flash("Reproducido con éxito!")
+    return redirect(url_for(return_var))
+
+
+@app.route("/busTi", methods=["GET", "POST"])
+def busTi():
+    if request.method == "POST":
+        id = request.form["id"]
+        id = id.replace("'", "")
+        id = id.replace("--", "")
+        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+        cur.execute(
+            """
+            SELECT * FROM trailer t WHERE titulo like '{0}';
+            """.format(
+                id
+            )
+        )
+        busTitulo = cur.fetchall()
+        return render_template("busquedaTitulo.html", lista=busTitulo)
+
+
+# Busqueda titulo
+@app.route("/busquedatitulo")
+def busquedatitulo():
+    return render_template("busquedaTitulo.html")
+
+
+@app.route("/busAc", methods=["GET", "POST"])
+def busAc():
+    if request.method == "POST":
+        id = request.form["id"]
+        id = id.replace("'", "")
+        id = id.replace("--", "")
+
+        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+        cur.execute(
+            """
+            SELECT * FROM trailer t
+            LEFT JOIN actor a ON t.actorprincipal = a.id_actor
+            WHERE a.nombre like '{0}';
+            """.format(
+                id
+            )
+        )
+        busTitulo = cur.fetchall()
+        return render_template("busquedaActor.html", lista=busTitulo)
+
+
+# Busqueda titulo
+@app.route("/busquedaActor")
+def busquedaActor():
+    return render_template("busquedaActor.html")
+
+
+@app.route("/busG", methods=["GET", "POST"])
+def busG():
+    if request.method == "POST":
+        id = request.form["id"]
+        id = id.replace("'", "")
+        id = id.replace("--", "")
+
+        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+        cur.execute(
+            """
+            SELECT * FROM trailer t 
+            LEFT JOIN genero g ON t.genero_t = g.id_genero
+            WHERE g.nombregen like '{0}';
+            """.format(
+                id
+            )
+        )
+        busTitulo = cur.fetchall()
+        return render_template("busquedaGenero.html", lista=busTitulo)
+
+
+@app.route("/busD", methods=["GET", "POST"])
+def busD():
+    if request.method == "POST":
+        id = request.form["id"]
+        id = id.replace("'", "")
+        id = id.replace("--", "")
+
+        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+        cur.execute(
+            """
+            SELECT * FROM trailer t 
+            LEFT JOIN director d ON t.director_t = d.id_director
+            WHERE d.nombre like '{0}';
+            """.format(
+                id
+            )
+        )
+        busTitulo = cur.fetchall()
+        return render_template("busquedaDirector.html", lista=busTitulo)
+
+
+# Busqueda titulo
+@app.route("/busquedagenero")
+def busquedagenero():
+    return render_template("busquedaGenero.html")
+
+
+# Busqueda titulo
+@app.route("/busquedadirec")
+def busquedadirec():
+    return render_template("busquedaDirector.html")
+
+
+# Hub de busqueda
+@app.route("/menuTabla")
+def menuTabla():
+    return render_template("tabla.html")
 
 
 # Catalogo
@@ -1714,7 +2339,7 @@ def modanuncio():
 # Modificar anuncio
 @app.route("/modanunciante")
 def modanunciante():
-    return render_template("modificarAnunciante.html")
+    return render_template("modifyAnunciante.html")
 
 
 # Referencia: https://codeforgeek.com/render-html-file-in-flask/

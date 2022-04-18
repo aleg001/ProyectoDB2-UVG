@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/busquedas.css') }}">
+    <title>Busqueda genero</title>
+    <style>
+        table,
+        th,
+        td {
+            border: 3px solid white;
+        }
+
+        table {
+            position: absolute;
+            top: 600px;
+            border-collapse: collapse;
+        }
+
+        td {
+            color: white;
+        }
+
+        tr {
+            background-color: blue;
+            color: white;
+        }
+
+        th {
+            background-color: blue;
+            color: white;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <p class="title">Buscar por genero</p>
+
+    <hr>
+
+    <form class="form" action="/busG" method="POST" autocomplete="off">
+
+        <input type="text" placeholder="Genero" name="id" id="id" method="GET">
+        <section class=" clearfix">
+            <button type="submit" class="add-tr-btn" value="submit"> <a id="Add-Tr">Buscar genero</a>
+            </button>
+        </section>
+
+        <table id="directores" style="width: 100%">
+            <thead>
+                <tr>
+                    <td>ID de Pelicula</td>
+                    <td>Titulo de Pelicula</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in lista %}
+                <tr>
+                    <td>{{row[0]}}</td>
+                    <td>{{row[1]}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+
+    </form>
+
+</body>
+
+</html>
