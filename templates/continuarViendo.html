@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/busquedas.css') }}">
+    <title>Continuar viendo</title>
+
+</head>
+
+<body>
+
+    <p class="title">Continuar viendo</p>
+
+    <hr>
+
+    <section class="inputs-fav">
+        <form class="form" action="/listaTotal" method="POST" autocomplete="off">
+            <section class="inputs-fav1">
+                <input type="text" placeholder="Nombre" name="id" id="id" method="GET">
+
+            </section>
+        </form>
+        <form class="form" action="/actualizarLista" method="POST" autocomplete="off">
+            <section class="inputs-fav2">
+                <input type="text" placeholder="ID Trailer" name="titulo" id="titulo" method="GET">
+                <section class=" clearfix">
+                    <button type="submit" class="add-tr-btn" value="submit"> <a id="Add-Tr">Terminar de ver</a>
+                    </button>
+                </section>
+            </section>
+        </form>
+    </section>
+
+    <table id="directores">
+        <thead>
+
+            <td>ID de Pelicula</td>
+            <td>Titulo de Pelicula</td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in lista %}
+
+            <td>{{row[0]}}</td>
+            <td>{{row[1]}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</body>
+
+
+</html>

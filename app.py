@@ -40,20 +40,20 @@ import re
 from werkzeug.security import *
 
 # coneccion a base de datos con psycopg2 a elephantsql
-
+""" 
 conn = bd.connect(
     database="zxzqzikf",
     user="zxzqzikf",
     password="BspqkwRodadqDN_71iCKb2Go16puePOD",
     host="heffalump.db.elephantsql.com",
     port=5432,
-)
-
+)"""
+""" 
 conn.autocommit = (
     True  # Ensure data is added to the database immediately after write commands
-)
-cursor = conn.cursor()
-# cursor.execute("DROP TABLE prueba;")
+)"""
+
+# cursor = conn.cursor()
 
 
 app = Flask(__name__)
@@ -507,7 +507,6 @@ def agregarUser():
     date = CreationDate()
     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     if request.method == "POST":
-
         name = request.form["name"]
         # Sanitacion de inputs
         name = name.replace("'", "")
@@ -563,9 +562,6 @@ def agregarUser():
                 IDActual, tipo
             )
         )
-    # pruebas = cur.fetchall()
-    # print(pruebas)
-
     conn.commit()
     cur.close()
     return redirect(url_for("login"))
@@ -2126,6 +2122,8 @@ def busTi():
         cur.execute(
             """
             SELECT * FROM trailer t WHERE titulo like '{0}';
+            INSERT INTO palabras_busqueda
+            VALUES ('{0}');
             """.format(
                 id
             )
@@ -2153,6 +2151,8 @@ def busAc():
             SELECT * FROM trailer t
             LEFT JOIN actor a ON t.actorprincipal = a.id_actor
             WHERE a.nombre like '{0}';
+            INSERT INTO palabras_busqueda
+            VALUES ('{0}');
             """.format(
                 id
             )
@@ -2180,6 +2180,8 @@ def busG():
             SELECT * FROM trailer t 
             LEFT JOIN genero g ON t.genero_t = g.id_genero
             WHERE g.nombregen like '{0}';
+            INSERT INTO palabras_busqueda
+            VALUES ('{0}');
             """.format(
                 id
             )
@@ -2201,6 +2203,8 @@ def busD():
             SELECT * FROM trailer t 
             LEFT JOIN director d ON t.director_t = d.id_director
             WHERE d.nombre like '{0}';
+            INSERT INTO palabras_busqueda
+            VALUES ('{0}');
             """.format(
                 id
             )
@@ -2651,6 +2655,193 @@ def configureishon():
 @app.route("/config1")
 def config1():
     return render_template("configuracion.html")
+
+
+# Nueva reporteria - renders
+@app.route("/reporteria2")
+def reporteria2():
+    return render_template("reporteria2.html")
+
+
+# Top 5 admins
+@app.route("/topAdmins")
+def top5Admins():
+    return render_template("top5Admins.html")
+
+
+# Top 5 contenido
+@app.route("/topCont")
+def top5Cont():
+    return render_template("top5Contenido.html")
+
+
+# Top 10 terminos
+@app.route("/topTerminos")
+def top10Terminos():
+    return render_template("top10Terminos.html")
+
+
+# Top 20 visto
+@app.route("/topNoTerminado")
+def top20NoTerminado():
+    return render_template("top20Visto.html")
+
+
+# Reporteria funciones
+
+# top 5
+@app.route("/contenidoDado", methods=["POST"])
+def contenidoVistoMes():
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    if request.method == "POST":
+        cur.execute(
+            """
+             
+        """.format()
+        )
+        actoresdirectores = cur.fetchall()
+        flash(actoresdirectores)
+        conn.commit()
+        cur.close()
+    return render_template("top5Contenido.html")
+
+
+# top terminos
+@app.route("/terminosBuscados", methods=["POST"])
+def terminosBuscados():
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    if request.method == "POST":
+        cur.execute(
+            """
+        select top10terms();
+        """
+        )
+        actoresdirectores = cur.fetchall()
+        flash(actoresdirectores)
+        conn.commit()
+        cur.close()
+    return render_template("top10Terminos.html")
+
+
+@app.route("/adminMod", methods=["POST"])
+def adminModificacion():
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+    if request.method == "POST":
+        fecha1 = request.form["fecha1"]
+        fecha2 = request.form["fecha2"]
+        cur.execute(
+            """
+            select top5admin('{0}','{1}');
+        """.format(
+                fecha1, fecha2
+            )
+        )
+        actoresdirectores = cur.fetchall()
+
+        # [[datetime.time(21, 0)], [datetime.time(20, 0)], [datetime.time(16, 0)]]
+        primerAct = str(actoresdirectores[0])
+        segundoAct = str(actoresdirectores[1])
+        tercerAct = str(actoresdirectores[2])
+        cuartoAct = str(actoresdirectores[3])
+        QuintoAct = str(actoresdirectores[4])
+
+        flash(primerAct)
+        flash(segundoAct)
+        flash(tercerAct)
+        flash(cuartoAct)
+        flash(QuintoAct)
+
+        conn.commit()
+        cur.close()
+    return render_template("top5Admins.html")
+
+
+# Top 20 peli sin terminar
+@app.route("/peliFin", methods=["POST"])
+def peliSinTerminar():
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    if request.method == "POST":
+        fecha1 = request.form["fecha1"]
+        fecha2 = request.form["fecha2"]
+        cur.execute(
+            """
+        select top20pelis('{0}','{1}')
+        """.format(
+                fecha1, fecha2
+            )
+        )
+        actoresdirectores = cur.fetchall()
+        flash(actoresdirectores)
+        conn.commit()
+        cur.close()
+    return render_template("top20Visto.html")
+
+
+# Continuar viendo
+@app.route("/continuarViendo")
+def continuarViendo():
+    return render_template("continuarViendo.html")
+
+
+# Sacar lista de usuarios
+@app.route("/listaTotal", methods=["GET", "POST"])
+def listaTotal():
+    if request.method == "POST":
+        idaingresar = session["idactualperfil"]
+        idActual1 = str(idaingresar[0])
+        idActual1 = idActual1.replace("'", "")
+        idActual1 = idActual1.replace("[", "")
+        idActual1 = idActual1.replace("]", "")
+        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+        cur.execute(
+            """
+            select distinct t.titulo 
+            from reproduccion r 
+            left join trailer t on r.id_vid = t.id_trailer 
+            where r.fecha_terminado is null
+            and r.id_per like '{0}'
+            order by t.titulo;
+            """.format(
+                idActual1
+            )
+        )
+        listacompleta = cur.fetchall()
+        return render_template("continuarViendo.html", lista=listacompleta)
+
+
+# Terminar de ver
+@app.route("/actualizarLista", methods=["GET", "POST"])
+def actualizarLista():
+    if request.method == "POST":
+        titulo = request.form["titulo"]
+        print(titulo)
+        titulo = titulo.replace("'", "")
+        titulo = titulo.replace("--", "")
+        idaingresar = session["idactualperfil"]
+        idActual1 = str(idaingresar[0])
+        idActual1 = idActual1.replace("'", "")
+        idActual1 = idActual1.replace("[", "")
+        idActual1 = idActual1.replace("]", "")
+        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+        cur.execute(
+            """
+            update 
+            reproduccion 
+            set 
+            fecha_terminado = '5-30-2022 16:00:00'
+            where reproduccion.id_rep in(
+            select id_rep from reproduccion r,trailer 
+            where r.id_vid = trailer.id_trailer
+            and r.id_per like '{0}' and trailer.titulo like '{1}'
+            );
+            """.format(
+                idActual1, titulo
+            )
+        )
+        listacompleta = cur.fetchall()
+        flash("Has terminado de ver")
+        return render_template("continuarViendo.html", lista=listacompleta)
 
 
 # Referencia: https://codeforgeek.com/render-html-file-in-flask/
