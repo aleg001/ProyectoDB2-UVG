@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/horasPico.css') }}">
+    <title>Top 20 películas no terminadas de ver</title>
+</head>
+
+
+<body>
+    <section class="container">
+
+        <h1 class="title">Top 20 películas no terminadas de ver</h1>
+
+        <hr>
+
+        <form class="form" action="/peliFin" method="POST" autocomplete="off">
+            <input type="date" placeholder="Fecha inicio" name="dateI" id="dateI" method="GET" required>
+            <input type="date" placeholder="Fecha fin" name="dateF" id="dateF" method="GET" required>
+
+            <section class=" clearfix">
+                <button type="submit" class="add-act-btn" value="submit"> <a id="Add-Act">Consultar</a>
+                </button>
+            </section>
+        </form>
+    </section>
+
+    <section>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <ul class="MensajesFlash">
+            {% for message in messages %}
+            {{ message }}<br>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
+        {% block body %}{% endblock %}
+    </section>
+</body>
+
+</html>

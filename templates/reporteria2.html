@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/reportesAdmin.css') }}">
+    <title>Reportería de Admin II</title>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>Reportes para administrador</h1>
+        <hr>
+
+
+
+        <div class=" clearfix">
+            <button type="submit" class="signupbtn" method="GET"> <a id="signup" href="topTerminos">Top 10
+                    términos</a> </button>
+        </div>
+        <div class=" clearfix">
+            <button type="submit" class="signupbtn" method="GET"> <a id="signup" href="topAdmins">Top 5 admins</a>
+            </button>
+        </div>
+        <div class=" clearfix">
+            <button type="submit" class="signupbtn" method="GET"> <a id="signup" href="topCont">Top 5 contenido</a>
+            </button>
+        </div>
+        <div class=" clearfix">
+            <button type="submit" class="signupbtn" method="GET"> <a id="signup" href="topNoTerminado">Top 20 no
+                    terminado
+                </a>
+            </button>
+        </div>
+
+
+
+
+
+    </div>
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for message in messages %}
+    <div class="box-message">
+        <p class="MensajesFlash"> {{ message }} </p>
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+
+</body>
+
+</html>
