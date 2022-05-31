@@ -6,19 +6,17 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/horasPico.css') }}">
-    <title>Top 5 de administradores que hacen más modificaciones</title>
+    <title>Simulaciones usuarios</title>
 </head>
 
 
 <body>
     <section class="container">
-        <h1 class="title">Top 5 de administradores que hacen más modificaciones</h1>
+        <h1 class="title">Simulaciones usuarios</h1>
         <hr>
 
-        <form class="form" action="/adminMod" method="POST" autocomplete="off">
-            <input type="date" placeholder="Fecha inicio" name="fecha1" id="fecha1" method="GET" required>
-            <input type="date" placeholder="Fecha fin" name="fecha2" id="fecha2" method="GET" required>
-
+        <form class="form" action="/simularusuarios" method="POST" autocomplete="off">
+            <input type="number" placeholder="Cantidad" name="cant" id="cant" method="GET" required>
             <section class=" clearfix">
                 <button type="submit" class="add-act-btn" value="submit"> <a id="Add-Act">Consultar</a>
                 </button>

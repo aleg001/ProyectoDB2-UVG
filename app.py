@@ -40,24 +40,22 @@ import re
 from werkzeug.security import *
 
 # coneccion a base de datos con psycopg2 a elephantsql
-""" 
+
 conn = bd.connect(
     database="zxzqzikf",
     user="zxzqzikf",
     password="BspqkwRodadqDN_71iCKb2Go16puePOD",
     host="heffalump.db.elephantsql.com",
     port=5432,
-)"""
-""" 
+)
 conn.autocommit = (
     True  # Ensure data is added to the database immediately after write commands
-)"""
+)
 
-# cursor = conn.cursor()
+cursor = conn.cursor()
 
 
 app = Flask(__name__)
-# app = Flask(__name__, static_folder="frontend/build")
 app.secret_key = "Alecraft_01"
 app.config["EXPLAIN_TEMPLATE_LOADING"] = True
 
@@ -197,6 +195,15 @@ def ImpresionRepro(repro):
     repro = repro.replace(",", "")
     repro = "Reproducciones, categoria y tipo de cuenta:", repro
     flash(repro)
+    return repro
+
+
+def formato(repro):
+    repro = repro.replace("[", "")
+    repro = repro.replace("]", "")
+    repro = repro.replace("(", "")
+    repro = repro.replace(")", "")
+    repro = repro.replace(",", "")
     return repro
 
 
@@ -562,6 +569,26 @@ def agregarUser():
                 IDActual, tipo
             )
         )
+
+        cur.execute(
+            """
+            SELECT tiempo_mod FROM bitacora b ORDER BY tiempo_mod desc limit 1;
+            """
+        )
+
+        timestamp_bit = cur.fetchone()
+        print(timestamp_bit)
+        resultado = str(timestamp_bit[0])
+        resultado = formato(resultado)
+        cur.execute(
+            """
+            UPDATE bitacora
+                SET id_admin ='{0}'
+                WHERE tiempo_mod = '{1}';
+            """.format(
+                IDActual, resultado
+            )
+        )
     conn.commit()
     cur.close()
     return redirect(url_for("login"))
@@ -597,6 +624,26 @@ def eliminarUsuario():
                 )
             )
             return_var = "cat"
+            cur.execute(
+                """
+                SELECT tiempo_mod FROM bitacora b ORDER BY tiempo_mod desc limit 1;
+                """
+            )
+
+            timestamp_bit = cur.fetchone()
+            print(timestamp_bit)
+            resultado = str(timestamp_bit[0])
+            resultado = formato(resultado)
+            cur.execute(
+                """
+                UPDATE bitacora
+                    SET id_admin ='{0}'
+                    WHERE tiempo_mod = '{1}';
+                """.format(
+                    IDActual, resultado
+                )
+            )
+
             conn.commit()
         else:
             flash("El usuario ingresado no existe")
@@ -2842,6 +2889,85 @@ def actualizarLista():
         listacompleta = cur.fetchall()
         flash("Has terminado de ver")
         return render_template("continuarViendo.html", lista=listacompleta)
+
+
+# Simulaciones
+@app.route("/simulaciones")
+def simulaciones():
+    return render_template("Simulaciones.html")
+
+
+# simulaciones peliculas
+@app.route("/simPeli")
+def simPeli():
+    return render_template("simPeli.html")
+
+
+@app.route("/simularpeliculas", methods=["POST"])
+def simularpeliculas():
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    if request.method == "POST":
+        cant = request.form["cant"]
+        cur.execute(
+            """
+        select peli_simulacion('{0}')
+        """.format(
+                cant
+            )
+        )
+        flash("Se ha agregado a la base de datos")
+        conn.commit()
+        cur.close()
+    return render_template("simPeli.html")
+
+
+# simulaciones usuarios
+@app.route("/simUser")
+def simUser():
+    return render_template("simUsuarios.html")
+
+
+@app.route("/simularusuarios", methods=["POST"])
+def simularusuarios():
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    if request.method == "POST":
+        cant = request.form["cant"]
+        cur.execute(
+            """
+        select usuario_simulacion('{0}')
+        """.format(
+                cant
+            )
+        )
+        flash("Se ha agregado a la base de datos")
+        conn.commit()
+        cur.close()
+    return render_template("simUsuarios.html")
+
+
+# simulaciones visualizaciones
+@app.route("/simVis")
+def simVis():
+    return render_template("simVisual.html")
+
+
+@app.route("/simularvisualizaciones", methods=["POST"])
+def simularvisualizaciones():
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    if request.method == "POST":
+        cant = request.form["cant"]
+        fecha1 = request.form["dateI"]
+        cur.execute(
+            """
+        select repros_simulacion('{0}','{1}');
+        """.format(
+                cant, fecha1
+            )
+        )
+        flash("Se ha agregado a la base de datos")
+        conn.commit()
+        cur.close()
+    return render_template("simVisual.html")
 
 
 # Referencia: https://codeforgeek.com/render-html-file-in-flask/
