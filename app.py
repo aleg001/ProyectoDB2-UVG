@@ -41,6 +41,10 @@ from werkzeug.security import *
 
 # coneccion a base de datos con psycopg2 a elephantsql
 
+sesionId = ""
+IDActual = ""
+
+
 conn = bd.connect(
     database="zxzqzikf",
     user="zxzqzikf",
@@ -89,6 +93,7 @@ Para verificar:
 check_password_hash(contraseñaEncriptada, contraseña)
 
 """
+
 
 # Creacion aleatoria de ID para usuario
 def IDUsuario():
@@ -216,10 +221,101 @@ def horasPico():
     return render_template("horasPicos.html")
 
 
+# Login de admin
+@app.route("/adminLog", methods=["POST"])
+def adminLog():
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    global IDActual
+    if request.method == "POST":
+
+        email = request.form["username"]
+        # Sanitazacion de inputs
+        email = email.replace("'", "")
+        email = email.replace("--", "")
+
+        password = request.form["psw"]
+        # Sanitazacion de inputs
+        password = password.replace("'", "")
+        password = password.replace("--", "")
+        # print(password)
+        passHash = generate_password_hash(password, method="sha256")
+        # print(email)
+        # print(passHash)
+        intentoFallido = IDIntentoFallido()
+        intentoFecha = FechaActual()
+
+        # print(intentoFallido)
+        # print(intentoFecha)
+
+        cur.execute(
+            """
+            SELECT * FROM usuario WHERE correo LIKE '{0}' and isadmin like 'True'
+            """.format(
+                email
+            )
+        )
+
+        CorreoExistente = cur.fetchone()
+
+        if CorreoExistente:
+            contraHash = CorreoExistente["contrasena"]
+            verificarPass = check_password_hash(contraHash, password)
+            if verificarPass:
+                cur.execute(
+                    """
+                    SELECT id_perfil FROM perfil p
+                    LEFT JOIN usuario u ON p.id_usuario = u.id
+                    WHERE u.correo LIKE '{0}'
+                    """.format(
+                        email
+                    )
+                )
+                idactual = cur.fetchone()
+
+                IDActual = idactual
+                print("VALOR DE ID: ", IDActual)
+
+                session["idactualperfil"] = idactual
+
+                return redirect(url_for("menuadmin"))
+            else:
+                # contadorIntentosFallidos = contadorIntentosFallidos + 1
+                # print("CONTADOR 1: ", contadorIntentosFallidos)
+                cur.execute(
+                    """ 
+                INSERT INTO intentosFallidos VALUES ('{0}', '{1}', '{2}');
+                """.format(
+                        intentoFallido, email, intentoFecha
+                    )
+                )
+                flash("Contraseña equivocada")
+                return redirect(url_for("loginAdmin"))
+        else:
+            # contadorIntentosFallidos = contadorIntentosFallidos + 1
+            # print("CONTADOR 2: ", contadorIntentosFallidos)
+
+            cur.execute(
+                """ 
+                INSERT INTO intentosFallidos VALUES ('{0}', '{1}', '{2}');
+            """.format(
+                    intentoFallido, email, intentoFecha
+                )
+            )
+            flash("Correo invalido")
+            return redirect(url_for("loginAdmin"))
+
+    conn.commit()
+    cur.close()
+    flash("Credenciales invalidos 3")
+    # contadorIntentosFallidos = contadorIntentosFallidos + 1
+    # print("CONTADOR FINAL: ", contadorIntentosFallidos)
+    return redirect(url_for("loginAdmin"))
+
+
 # estadisticas
 @app.route("/estadisticaHorasPico", methods=["POST"])
 def estadisticaHorasPico():
-
+    global IDActual
     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     if request.method == "POST":
         date = request.form["date"]
@@ -508,6 +604,7 @@ def top10Actores():
 
 @app.route("/agregarUser", methods=["POST"])
 def agregarUser():
+    global IDActual
     IDActual = IDUsuario()
     RandomID = IDUsuario()
     isNotActive = False
@@ -580,6 +677,7 @@ def agregarUser():
         print(timestamp_bit)
         resultado = str(timestamp_bit[0])
         resultado = formato(resultado)
+        IDActual = formato(IDActual)
         cur.execute(
             """
             UPDATE bitacora
@@ -597,6 +695,7 @@ def agregarUser():
 # Eliminar un usuario
 @app.route("/eliminarUsuario", methods=["POST"])
 def eliminarUsuario():
+    global IDActual
     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     return_var = "deleteuser"
     if request.method == "POST":
@@ -634,6 +733,8 @@ def eliminarUsuario():
             print(timestamp_bit)
             resultado = str(timestamp_bit[0])
             resultado = formato(resultado)
+            IDActual = str(IDActual[0])
+            IDActual = formato(IDActual)
             cur.execute(
                 """
                 UPDATE bitacora
@@ -666,92 +767,6 @@ def logout():
 
 
 # Login de admin
-@app.route("/adminLog", methods=["POST"])
-def adminLog():
-    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-
-    if request.method == "POST":
-
-        email = request.form["username"]
-        # Sanitazacion de inputs
-        email = email.replace("'", "")
-        email = email.replace("--", "")
-
-        password = request.form["psw"]
-        # Sanitazacion de inputs
-        password = password.replace("'", "")
-        password = password.replace("--", "")
-        # print(password)
-        passHash = generate_password_hash(password, method="sha256")
-        # print(email)
-        # print(passHash)
-        intentoFallido = IDIntentoFallido()
-        intentoFecha = FechaActual()
-
-        # print(intentoFallido)
-        # print(intentoFecha)
-
-        cur.execute(
-            """
-            SELECT * FROM usuario WHERE correo LIKE '{0}' and isadmin like 'True'
-            """.format(
-                email
-            )
-        )
-
-        CorreoExistente = cur.fetchone()
-
-        if CorreoExistente:
-            contraHash = CorreoExistente["contrasena"]
-            verificarPass = check_password_hash(contraHash, password)
-            if verificarPass:
-                cur.execute(
-                    """
-                    SELECT id_perfil FROM perfil p
-                    LEFT JOIN usuario u ON p.id_usuario = u.id
-                    WHERE u.correo LIKE '{0}'
-                    """.format(
-                        email
-                    )
-                )
-                idactual = cur.fetchone()
-                session["idactualperfil"] = idactual
-                return redirect(url_for("menuadmin"))
-            else:
-                # contadorIntentosFallidos = contadorIntentosFallidos + 1
-                # print("CONTADOR 1: ", contadorIntentosFallidos)
-                cur.execute(
-                    """ 
-                INSERT INTO intentosFallidos VALUES ('{0}', '{1}', '{2}');
-                """.format(
-                        intentoFallido, email, intentoFecha
-                    )
-                )
-                flash("Contraseña equivocada")
-                return redirect(url_for("loginAdmin"))
-        else:
-            # contadorIntentosFallidos = contadorIntentosFallidos + 1
-            # print("CONTADOR 2: ", contadorIntentosFallidos)
-
-            cur.execute(
-                """ 
-                INSERT INTO intentosFallidos VALUES ('{0}', '{1}', '{2}');
-            """.format(
-                    intentoFallido, email, intentoFecha
-                )
-            )
-            flash("Correo invalido")
-            return redirect(url_for("loginAdmin"))
-
-    conn.commit()
-    cur.close()
-    flash("Credenciales invalidos 3")
-    # contadorIntentosFallidos = contadorIntentosFallidos + 1
-    # print("CONTADOR FINAL: ", contadorIntentosFallidos)
-    return redirect(url_for("loginAdmin"))
-
-
-# Login de admin
 @app.route("/loginAdmin")
 def loginAdmin():
     return render_template("loginAdmin.html")
@@ -772,6 +787,7 @@ def manAnu():
 # Agregar un nuevo director
 @app.route("/agregarDirector", methods=["POST"])
 def agregarDirector():
+    global IDActual
     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     return_var = "add_director"
     if request.method == "POST":
@@ -808,6 +824,27 @@ def agregarDirector():
                     dpi, name, lastname
                 )
             )
+            cur.execute(
+                """
+                SELECT tiempo_mod FROM bitacora b ORDER BY tiempo_mod desc limit 1;
+                """
+            )
+
+            timestamp_bit = cur.fetchone()
+            print(timestamp_bit)
+            resultado = str(timestamp_bit[0])
+            resultado = formato(resultado)
+            IDActual = str(IDActual[0])
+            IDActual = formato(IDActual)
+            cur.execute(
+                """
+                UPDATE bitacora
+                    SET id_admin ='{0}'
+                    WHERE tiempo_mod = '{1}';
+                """.format(
+                    IDActual, resultado
+                )
+            )
             return_var = "menuadmin"
             conn.commit()
         cur.close()
@@ -842,6 +879,28 @@ def eliminarDirector():
                 DELETE FROM director WHERE id_director like '{0}';
                 """.format(
                     id
+                )
+            )
+
+            cur.execute(
+                """
+                SELECT tiempo_mod FROM bitacora b ORDER BY tiempo_mod desc limit 1;
+                """
+            )
+
+            timestamp_bit = cur.fetchone()
+            print(timestamp_bit)
+            resultado = str(timestamp_bit[0])
+            resultado = formato(resultado)
+            IDActual = str(IDActual[0])
+            IDActual = formato(IDActual)
+            cur.execute(
+                """
+                UPDATE bitacora
+                    SET id_admin ='{0}'
+                    WHERE tiempo_mod = '{1}';
+                """.format(
+                    IDActual, resultado
                 )
             )
             return_var = "menuadmin"
@@ -894,6 +953,28 @@ def modDirector():
                     dpi, name, lastname, dpi
                 )
             )
+
+            cur.execute(
+                """
+                SELECT tiempo_mod FROM bitacora b ORDER BY tiempo_mod desc limit 1;
+                """
+            )
+
+            timestamp_bit = cur.fetchone()
+            print(timestamp_bit)
+            resultado = str(timestamp_bit[0])
+            resultado = formato(resultado)
+            IDActual = str(IDActual[0])
+            IDActual = formato(IDActual)
+            cur.execute(
+                """
+                UPDATE bitacora
+                    SET id_admin ='{0}'
+                    WHERE tiempo_mod = '{1}';
+                """.format(
+                    IDActual, resultado
+                )
+            )
             conn.commit()
             return_var = "menuadmin"
         else:
@@ -906,6 +987,7 @@ def modDirector():
 # Agregar un nuevo actor
 @app.route("/agregarActor", methods=["POST"])
 def agregarActor():
+    global IDActual
     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     return_var = "add_actor"
     if request.method == "POST":
@@ -945,6 +1027,28 @@ def agregarActor():
                     dpi, name, lastname
                 )
             )
+            cur.execute(
+                """
+                SELECT tiempo_mod FROM bitacora b ORDER BY tiempo_mod desc limit 1;
+                """
+            )
+
+            timestamp_bit = cur.fetchone()
+            print(timestamp_bit)
+            resultado = str(timestamp_bit[0])
+            resultado = formato(resultado)
+            IDActual = str(IDActual[0])
+            IDActual = formato(IDActual)
+            cur.execute(
+                """
+                UPDATE bitacora
+                    SET id_admin ='{0}'
+                    WHERE tiempo_mod = '{1}';
+                """.format(
+                    IDActual, resultado
+                )
+            )
+
             conn.commit()
             return_var = "menuadmin"
         cur.close()
@@ -995,6 +1099,28 @@ def modActor():
                     dpi, name, lastname, dpi
                 )
             )
+
+            cur.execute(
+                """
+                SELECT tiempo_mod FROM bitacora b ORDER BY tiempo_mod desc limit 1;
+                """
+            )
+
+            timestamp_bit = cur.fetchone()
+            print(timestamp_bit)
+            resultado = str(timestamp_bit[0])
+            resultado = formato(resultado)
+            IDActual = str(IDActual[0])
+            IDActual = formato(IDActual)
+            cur.execute(
+                """
+                UPDATE bitacora
+                    SET id_admin ='{0}'
+                    WHERE tiempo_mod = '{1}';
+                """.format(
+                    IDActual, resultado
+                )
+            )
             conn.commit()
             return_var = "menuadmin"
         else:
@@ -1030,6 +1156,27 @@ def eliminarActor():
                 DELETE FROM actor WHERE id_actor like ('{0}');
                 """.format(
                     id
+                )
+            )
+            cur.execute(
+                """
+                SELECT tiempo_mod FROM bitacora b ORDER BY tiempo_mod desc limit 1;
+                """
+            )
+
+            timestamp_bit = cur.fetchone()
+            print(timestamp_bit)
+            resultado = str(timestamp_bit[0])
+            resultado = formato(resultado)
+            IDActual = str(IDActual[0])
+            IDActual = formato(IDActual)
+            cur.execute(
+                """
+                UPDATE bitacora
+                    SET id_admin ='{0}'
+                    WHERE tiempo_mod = '{1}';
+                """.format(
+                    IDActual, resultado
                 )
             )
             return_var = "menuadmin"
@@ -1077,6 +1224,28 @@ def agregarAnunciante():
                     id, name
                 )
             )
+
+            cur.execute(
+                """
+                SELECT tiempo_mod FROM bitacora b ORDER BY tiempo_mod desc limit 1;
+                """
+            )
+
+            timestamp_bit = cur.fetchone()
+            print(timestamp_bit)
+            resultado = str(timestamp_bit[0])
+            resultado = formato(resultado)
+            IDActual = str(IDActual[0])
+            IDActual = formato(IDActual)
+            cur.execute(
+                """
+                UPDATE bitacora
+                    SET id_admin ='{0}'
+                    WHERE tiempo_mod = '{1}';
+                """.format(
+                    IDActual, resultado
+                )
+            )
             return_var = "menuadmin"
             conn.commit()
         cur.close()
@@ -1121,6 +1290,27 @@ def modAnunciante():
                     id, name
                 )
             )
+            cur.execute(
+                """
+                SELECT tiempo_mod FROM bitacora b ORDER BY tiempo_mod desc limit 1;
+                """
+            )
+
+            timestamp_bit = cur.fetchone()
+            print(timestamp_bit)
+            resultado = str(timestamp_bit[0])
+            resultado = formato(resultado)
+            IDActual = str(IDActual[0])
+            IDActual = formato(IDActual)
+            cur.execute(
+                """
+                UPDATE bitacora
+                    SET id_admin ='{0}'
+                    WHERE tiempo_mod = '{1}';
+                """.format(
+                    IDActual, resultado
+                )
+            )
             return_var = "menuadmin"
             conn.commit()
         else:
@@ -1157,6 +1347,27 @@ def eliminarAnunciante():
                 DELETE FROM anunciante WHERE id_anunciante like ('{0}');
                 """.format(
                     id
+                )
+            )
+            cur.execute(
+                """
+                SELECT tiempo_mod FROM bitacora b ORDER BY tiempo_mod desc limit 1;
+                """
+            )
+
+            timestamp_bit = cur.fetchone()
+            print(timestamp_bit)
+            resultado = str(timestamp_bit[0])
+            resultado = formato(resultado)
+            IDActual = str(IDActual[0])
+            IDActual = formato(IDActual)
+            cur.execute(
+                """
+                UPDATE bitacora
+                    SET id_admin ='{0}'
+                    WHERE tiempo_mod = '{1}';
+                """.format(
+                    IDActual, resultado
                 )
             )
             return_var = "menuadmin"
@@ -1203,6 +1414,29 @@ def agregarAnuncio():
                     anuncioID, id, url_ad, descri
                 )
             )
+
+            cur.execute(
+                """
+                SELECT tiempo_mod FROM bitacora b ORDER BY tiempo_mod desc limit 1;
+                """
+            )
+
+            timestamp_bit = cur.fetchone()
+            print(timestamp_bit)
+            resultado = str(timestamp_bit[0])
+            resultado = formato(resultado)
+            IDActual = str(IDActual[0])
+            IDActual = formato(IDActual)
+            cur.execute(
+                """
+                UPDATE bitacora
+                    SET id_admin ='{0}'
+                    WHERE tiempo_mod = '{1}';
+                """.format(
+                    IDActual, resultado
+                )
+            )
+
             return_var = "menuadmin"
 
             conn.commit()
@@ -1256,6 +1490,29 @@ def modAnuncio():
                     anuncioID, id, url_ad, descri
                 )
             )
+
+            cur.execute(
+                """
+                SELECT tiempo_mod FROM bitacora b ORDER BY tiempo_mod desc limit 1;
+                """
+            )
+
+            timestamp_bit = cur.fetchone()
+            print(timestamp_bit)
+            resultado = str(timestamp_bit[0])
+            resultado = formato(resultado)
+            IDActual = str(IDActual[0])
+            IDActual = formato(IDActual)
+            cur.execute(
+                """
+                UPDATE bitacora
+                    SET id_admin ='{0}'
+                    WHERE tiempo_mod = '{1}';
+                """.format(
+                    IDActual, resultado
+                )
+            )
+
             conn.commit()
             return_var = "menuadmin"
         else:
@@ -1294,6 +1551,28 @@ def eliminarAnuncio():
                     id
                 )
             )
+
+            cur.execute(
+                """
+                SELECT tiempo_mod FROM bitacora b ORDER BY tiempo_mod desc limit 1;
+                """
+            )
+
+            timestamp_bit = cur.fetchone()
+            print(timestamp_bit)
+            resultado = str(timestamp_bit[0])
+            resultado = formato(resultado)
+            IDActual = str(IDActual[0])
+            IDActual = formato(IDActual)
+            cur.execute(
+                """
+                UPDATE bitacora
+                    SET id_admin ='{0}'
+                    WHERE tiempo_mod = '{1}';
+                """.format(
+                    IDActual, resultado
+                )
+            )
             return_var = "menuadmin"
             conn.commit()
         else:
@@ -1306,7 +1585,7 @@ def eliminarAnuncio():
 # Agregar Trailer
 @app.route("/agregarTrailer", methods=["POST"])
 def agregarTrailer():
-    return_var = "add_trailer"
+    return_var = "addtrailer"
     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     if request.method == "POST":
         IDTrailer = request.form["id"]
@@ -1428,6 +1707,28 @@ def agregarTrailer():
                                         tiempo,
                                     )
                                 )
+
+                                cur.execute(
+                                    """
+                                    SELECT tiempo_mod FROM bitacora b ORDER BY tiempo_mod desc limit 1;
+                                    """
+                                )
+
+                                timestamp_bit = cur.fetchone()
+                                print(timestamp_bit)
+                                resultado = str(timestamp_bit[0])
+                                resultado = formato(resultado)
+                                IDActual = str(IDActual[0])
+                                IDActual = formato(IDActual)
+                                cur.execute(
+                                    """
+                                    UPDATE bitacora
+                                        SET id_admin ='{0}'
+                                        WHERE tiempo_mod = '{1}';
+                                    """.format(
+                                        IDActual, resultado
+                                    )
+                                )
                                 conn.commit()
                                 return_var = "menuadmin"
                             else:
@@ -1537,6 +1838,27 @@ def modTrailer():
                     tiempo,
                 )
             )
+            cur.execute(
+                """
+                SELECT tiempo_mod FROM bitacora b ORDER BY tiempo_mod desc limit 1;
+                """
+            )
+
+            timestamp_bit = cur.fetchone()
+            print(timestamp_bit)
+            resultado = str(timestamp_bit[0])
+            resultado = formato(resultado)
+            IDActual = str(IDActual[0])
+            IDActual = formato(IDActual)
+            cur.execute(
+                """
+                UPDATE bitacora
+                    SET id_admin ='{0}'
+                    WHERE tiempo_mod = '{1}';
+                """.format(
+                    IDActual, resultado
+                )
+            )
             conn.commit()
             return_var = "menuadmin"
         cur.close()
@@ -1570,6 +1892,27 @@ def eliminarTrailer():
                 DELETE FROM trailer WHERE id_trailer like ('{0}');
                 """.format(
                     id
+                )
+            )
+            cur.execute(
+                """
+                SELECT tiempo_mod FROM bitacora b ORDER BY tiempo_mod desc limit 1;
+                """
+            )
+
+            timestamp_bit = cur.fetchone()
+            print(timestamp_bit)
+            resultado = str(timestamp_bit[0])
+            resultado = formato(resultado)
+            IDActual = str(IDActual[0])
+            IDActual = formato(IDActual)
+            cur.execute(
+                """
+                UPDATE bitacora
+                    SET id_admin ='{0}'
+                    WHERE tiempo_mod = '{1}';
+                """.format(
+                    IDActual, resultado
                 )
             )
             return_var = "cat"
@@ -1645,6 +1988,7 @@ def verificarUser():
                 )
                 idactual = cur.fetchone()
                 session["idactualperfil"] = idactual
+                IDActual = idactual
                 return redirect(url_for("cat"))
 
             else:
@@ -2237,6 +2581,19 @@ def busG():
         return render_template("busquedaGenero.html", lista=busTitulo)
 
 
+@app.route("/busBit", methods=["GET", "POST"])
+def busBit():
+
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    cur.execute(
+        """
+        SELECT * FROM bitacora order by tiempo_mod desc
+        """
+    )
+    bitacorax = cur.fetchall()
+    return render_template("bitacoras.html", lista=bitacorax)
+
+
 @app.route("/busD", methods=["GET", "POST"])
 def busD():
     if request.method == "POST":
@@ -2258,12 +2615,6 @@ def busD():
         )
         busTitulo = cur.fetchall()
         return render_template("busquedaDirector.html", lista=busTitulo)
-
-
-# Busqueda titulo
-@app.route("/busquedagenero")
-def busquedagenero():
-    return render_template("busquedaGenero.html")
 
 
 # Busqueda titulo
@@ -2826,9 +3177,22 @@ def peliSinTerminar():
 
 
 # Continuar viendo
-@app.route("/continuarViendo")
+@app.route("/continuarViendo", methods=["GET", "POST"])
 def continuarViendo():
-    return render_template("continuarViendo.html")
+
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    cur.execute(
+        """
+        select distinct t.titulo 
+        from reproduccion r 
+        left join trailer t on r.id_vid = t.id_trailer 
+        where r.fecha_terminado is null
+        and r.id_per like 'idper4'
+        order by t.titulo;
+        """
+    )
+    enProgreso = cur.fetchall()
+    return render_template("continuarViendo.html", lista=enProgreso)
 
 
 # Sacar lista de usuarios
@@ -2861,6 +3225,7 @@ def listaTotal():
 @app.route("/actualizarLista", methods=["GET", "POST"])
 def actualizarLista():
     if request.method == "POST":
+        flash("Has terminado de ver esta peli!")
         titulo = request.form["titulo"]
         print(titulo)
         titulo = titulo.replace("'", "")
@@ -2876,7 +3241,7 @@ def actualizarLista():
             update 
             reproduccion 
             set 
-            fecha_terminado = '5-30-2022 16:00:00'
+            fecha_terminado = CURRENT_TIMESTAMP
             where reproduccion.id_rep in(
             select id_rep from reproduccion r,trailer 
             where r.id_vid = trailer.id_trailer
@@ -2886,14 +3251,36 @@ def actualizarLista():
                 idActual1, titulo
             )
         )
+        conn.commit()
+        cur.close()
+        idaingresar = session["idactualperfil"]
+        idActual1 = str(idaingresar[0])
+        idActual1 = idActual1.replace("'", "")
+        idActual1 = idActual1.replace("[", "")
+        idActual1 = idActual1.replace("]", "")
+        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+        cur.execute(
+            """
+            select distinct t.titulo 
+            from reproduccion r 
+            left join trailer t on r.id_vid = t.id_trailer 
+            where r.fecha_terminado is null
+            and r.id_per like '{0}'
+            order by t.titulo;
+            """.format(
+                idActual1
+            )
+        )
         listacompleta = cur.fetchall()
-        flash("Has terminado de ver")
+        conn.commit()
+        cur.close()
+
         return render_template("continuarViendo.html", lista=listacompleta)
 
 
 # Simulaciones
-@app.route("/simulaciones")
-def simulaciones():
+@app.route("/Simulaciones")
+def Simulaciones():
     return render_template("Simulaciones.html")
 
 
@@ -2968,6 +3355,48 @@ def simularvisualizaciones():
         conn.commit()
         cur.close()
     return render_template("simVisual.html")
+
+
+# Continuar viendo
+@app.route("/Mantenimiento", methods=["GET", "POST"])
+def Mantenimiento():
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    cur.execute(
+        """
+        select * from usuario
+        where isadmin like 'false';
+        """
+    )
+    manta = cur.fetchall()
+    return render_template("mantenimiento.html", lista=manta)
+
+
+@app.route("/mantenimiento1", methods=["GET", "POST"])
+def mantenimiento1():
+    if request.method == "POST":
+        user = request.form["user"]
+        user = user.replace("'", "")
+        user = user.replace("--", "")
+        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+        cur.execute(
+            """
+        update usuario set isadmin = 'true'
+            where id like '{0}'
+            """.format(
+                user
+            )
+        )
+        conn.commit()
+        cur.close()
+        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+        cur.execute(
+            """
+            select * from usuario
+            where isadmin like 'false';
+            """
+        )
+        manta = cur.fetchall()
+    return render_template("mantenimiento.html", lista=manta)
 
 
 # Referencia: https://codeforgeek.com/render-html-file-in-flask/

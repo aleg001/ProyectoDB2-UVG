@@ -2,7 +2,7 @@
   padding: 0;
   margin: 0;
   box-sizing: border-box;
-  font-family: "Open Sans", sans-serif, white;
+  font-family: 'Open Sans', sans-serif, white;
 }
 
 body {
@@ -140,6 +140,15 @@ table {
   border-collapse: collapse;
 }
 
+.table1 {
+  width: 60vw;
+  color: red;
+  background-color: red;
+  position: absolute;
+  top: -100px;
+  border-collapse: collapse;
+}
+
 td {
   text-shadow: 2px 2px 5px #011f26;
   color: white;
@@ -174,4 +183,39 @@ th {
   position: absolute;
   top: 380px;
   border-collapse: collapse;
+}
+
+.continuarviendo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.tablacontinuar {
+  width: 60vw;
+  color: red;
+  background-color: red;
+  border-collapse: collapse;
+}
+
+.continuar-viend-section {
+  display: flex;
+  flex-direction: columns;
+  align-items: center;
+  justify-content: center;
+}
+
+.inputs-continuar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.MensajesFlash {
+  padding: 15px;
+  margin-bottom: 20px;
+  background-color: #737373;
+  border-radius: 40px;
+  color: white;
 }

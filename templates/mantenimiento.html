@@ -6,13 +6,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/busquedas.css') }}">
-    <title>Continuar viendo</title>
+    <title>Mantenimiento</title>
 
 </head>
 
 <body>
 
-    <p class="title">Continuar viendo</p>
+    <p class="title">Mantenimiento</p>
     <hr>
 
 
@@ -25,10 +25,10 @@
             <section class="continuarviendo">
                 <form class="form" action="/mantenimiento1" method="POST" autocomplete="off">
                     <section class="inputs-continuar">
-                        <input type="text" placeholder="Nombre" name="titulo" id="titulo" method="GET">
+                        <input type="text" placeholder="Nombre" name="user" id="user" method="GET">
                     </section>
                     <section class=" clearfix">
-                        <button type="submit" class="add-tr-btn" value="submit"> <a id="Add-Tr">Terminar de ver</a>
+                        <button type="submit" class="add-tr-btn" value="submit"> <a id="Add-Tr">Hacer administrador</a>
                         </button>
                     </section>
                 </form>
@@ -37,7 +37,7 @@
 
         <table id="enProgreso" class="tablacontinuar">
             <thead>
-                <td>Titulo de Pelicula</td>
+                <td>Usuario no admin</td>
                 </tr>
             </thead>
             <tbody>
