@@ -3092,10 +3092,13 @@ def top20NoTerminado():
 def contenidoVistoMes():
     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     if request.method == "POST":
+        fecha1 = request.form["dateI"]
         cur.execute(
             """
-             
-        """.format()
+        select top5content('{0}');
+        """.format(
+                fecha1
+            )
         )
         actoresdirectores = cur.fetchall()
         flash(actoresdirectores)
